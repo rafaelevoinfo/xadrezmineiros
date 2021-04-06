@@ -1,0 +1,7 @@
+{
+  "name": "XadrezMineiros",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
