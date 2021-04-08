@@ -1,0 +1,51 @@
+.radio-item {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background-color: transparent;
+  border-radius: 10px 10px 0 0;
+}
+
+.radio-item input {
+  appearance: none;
+  margin: auto;
+
+}
+
+input+label {
+  text-align: center;
+  margin: 0;
+  color: gray;
+}
+
+
+@media (max-width:600px) {
+  .radio-item input {
+    width: 32px;
+    height: auto;
+  }
+
+  input+label {
+    font-size: .8rem;
+  }
+}
+
+@media (min-width:601px) {
+  .radio-item input {
+    width: 48px;
+    height: auto;
+  }
+
+  input+label {
+    font-size: 1rem;
+  }
+}
+
+// input:checked+label {
+//   color: var(--ion-color-azul-claro);
+// }
+
+.radio-item input:focus {
+  appearance: none;
+  outline: none;
+}

@@ -13,6 +13,14 @@ const routes: Routes = [
   {
     path: 'torneios',
     loadChildren: () => import('./torneios/torneios.module').then(m => m.TorneiosPageModule)
+  },
+  {
+    path: 'torneio',
+    loadChildren: () => import('./torneio/torneio.module').then(m => m.TorneioPageModule)
+  },
+  {
+    path: 'torneio/:id',
+    loadChildren: () => import('./torneio/torneio.module').then(m => m.TorneioPageModule)
   }
 
 ];

@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-button type="submit" [disabled]="torneioForm.invalid" (click)="salvar()">Salvar</ion-button>
+    </ion-buttons>
+    <ion-title>Torneio</ion-title>
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-button expand="block" color="success" (click)="iniciar()">Iniciar torneio</ion-button>
+  <form [formGroup]='torneioForm'>
+    <ion-item>
+      <ion-input formControlName="nome" [value]="torneio?.nome" placeholder="Nome do torneio"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input formControlName="rodadas" type="number" min="1" max="20" step="1" [value]="torneio?.rodadas"
+        placeholder="Número de rodadas">
+      </ion-input>
+    </ion-item>
+  </form>
+  <app-tab-control backgroundColor="var(--ion-color-dark)">
+    <app-tab-bar backgroundColor="white" backgroundColorSelected="var(--ion-color-dark)" activeIdentificador="rodadas">
+      <app-tab-item label="Rodadas" identificador="rodadas"> </app-tab-item>
+      <app-tab-item label="Jogadores" identificador="jogadores"></app-tab-item>
+    </app-tab-bar>
+
+    <app-tab-content identificador="rodadas" active="true">
+      <div class="rodadas">
+        RODADA 1
+        <br>
+
+        RODADA 2
+      </div>
+    </app-tab-content>
+
+    <app-tab-content identificador="jogadores">
+      <form *ngIf="torneio?.status==0" [formGroup]='jogadorForm' (submit)="adicionarJogador()">
+        <ion-input formControlName="nome" placeholder="Nome do jogador"></ion-input>
+        <ion-input formControlName="username" placeholder="Username do Lichess"></ion-input>
+        <ion-button type="submit" [disabled]="jogadorForm.invalid" size="small">Entrar no torneio
+        </ion-button>
+      </form>
+      <ion-list class="lista">
+        <ion-item *ngFor="let vaJogador of torneio?.jogadores" lines="full" color="dark">
+          <ion-label>
+            {{vaJogador.nome}} ({{vaJogador.username}})
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </app-tab-content>
+  </app-tab-control>
+  <ion-button expand="block" color="danger" (click)="excluir()">Excluir torneio</ion-button>
+</ion-content>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NavController } from '@ionic/angular';
 import { Torneio } from '../Models/types';
 import { TorneioService } from '../servicos/torneio.service';
 
@@ -10,14 +11,20 @@ import { TorneioService } from '../servicos/torneio.service';
 export class TorneiosPage implements OnInit {
 
   private torneios: Torneio[];
-  constructor(private torneioService: TorneioService) {
+  constructor(private torneioService: TorneioService,
+    private navCtrl: NavController) {
 
   }
 
   ngOnInit() {
-    this.torneioService.buscarTorneios(true).then(t => {
-      this.torneios = t;
-    }).catch(error => console.log('Erro ao buscar os torneios'));
+
+  }
+  async ngAfterViewInit() {
+    this.torneios = await this.torneioService.buscarTorneios(true);
+  }
+
+  abrirTorneio(ipTorneio: Torneio) {
+    this.navCtrl.navigateForward(`/torneio/${ipTorneio.id}`);
   }
 
 }

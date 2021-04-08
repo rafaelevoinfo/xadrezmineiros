@@ -1,0 +1,8 @@
+<div class="radio-item" #divRadio [style.background-color]="checked ? backgroundColorSelected: 'transparent'">
+  <input type="radio" [id]="identificador" [checked]="checked"
+    [style]="checked ? 'content: url('+iconSelected+');' : 'content: url('+icon+');'" name="radio-group"
+    (change)="change($event)" #inputRadio>
+  <label [for]="identificador">{{label}}</label>
+
+  <!-- [style]="'-webkit-mask:url('+icone+')'" -->
+</div>
