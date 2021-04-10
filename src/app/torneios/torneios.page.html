@@ -11,7 +11,7 @@
     <ion-item *ngFor="let vaTorneio of torneios" lines="full" button (click)="abrirTorneio(vaTorneio)">
       <ion-label>
         {{vaTorneio.nome}}<br />
-        <h6>{{vaTorneio.jogadores?.length}} jogadores {{vaTorneio.rodadas}} rodadas</h6>
+        <h6>{{vaTorneio.jogadores?.length}} jogadores {{vaTorneio.qtde_rodadas}} rodadas</h6>
       </ion-label>
       <ion-note>{{vaTorneio.getDescricaoStatus()}}</ion-note>
     </ion-item>

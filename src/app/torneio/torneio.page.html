@@ -15,23 +15,27 @@
       <ion-input formControlName="nome" [value]="torneio?.nome" placeholder="Nome do torneio"></ion-input>
     </ion-item>
     <ion-item>
-      <ion-input formControlName="rodadas" type="number" min="1" max="20" step="1" [value]="torneio?.rodadas"
+      <ion-input formControlName="qtde_rodadas" type="number" [value]="torneio?.qtde_rodadas"
         placeholder="Número de rodadas">
       </ion-input>
     </ion-item>
   </form>
-  <app-tab-control backgroundColor="var(--ion-color-dark)">
+  <app-tab-control backgroundColor="var(--ion-color-light)">
     <app-tab-bar backgroundColor="white" backgroundColorSelected="var(--ion-color-dark)" activeIdentificador="rodadas">
       <app-tab-item label="Rodadas" identificador="rodadas"> </app-tab-item>
       <app-tab-item label="Jogadores" identificador="jogadores"></app-tab-item>
     </app-tab-bar>
 
     <app-tab-content identificador="rodadas" active="true">
-      <div class="rodadas">
-        RODADA 1
-        <br>
-
-        RODADA 2
+      <div *ngFor="let vaRodada of torneio?.rodadas;index as i">
+        <p>Rodada {{vaRodada.numero}}</p>
+        <ion-list>
+          <ion-item *ngFor="let vaPartida of torneio.rodadas[i].partidas">
+            <a href="{{vaPartida.link}}" class="partida">{{vaPartida.jogadorBrancas.nome}} vs
+              {{vaPartida.jogadorNegras.nome}} <br />{{vaPartida.resultado}}</a>
+            <ion-button slot="end" (click)="pegarResultado(vaRodada, vaPartida)">Pegar resultado</ion-button>
+          </ion-item>
+        </ion-list>
       </div>
     </app-tab-content>
 
@@ -43,7 +47,7 @@
         </ion-button>
       </form>
       <ion-list class="lista">
-        <ion-item *ngFor="let vaJogador of torneio?.jogadores" lines="full" color="dark">
+        <ion-item *ngFor="let vaJogador of torneio?.jogadores" lines="full">
           <ion-label>
             {{vaJogador.nome}} ({{vaJogador.username}})
           </ion-label>
