@@ -15,6 +15,7 @@ export class TorneioPage implements OnInit {
   torneio: Torneio;
   torneioForm: FormGroup;
   jogadorForm: FormGroup;
+  ganhadores: Jogador[] = [];
 
   constructor(private route: ActivatedRoute,
     private torneioService: TorneioService,
@@ -26,10 +27,15 @@ export class TorneioPage implements OnInit {
     this.torneioForm = this.fb.group({
       nome: ['', [Validators.required]],
       qtde_rodadas: ['', [Validators.required]],
+      ritmo_minutos: [10, [Validators.required]],
+      ritmo_incremento: [3, [Validators.required]],
+      data_inicio: ['', [Validators.required]]
     });
+
     this.jogadorForm = this.fb.group({
       nome: ['', [Validators.required]],
       username: ['', [Validators.required]],
+      rating: ['', [Validators.required]],
     });
   }
 
@@ -45,7 +51,12 @@ export class TorneioPage implements OnInit {
         this.torneioForm.patchValue({
           nome: this.torneio.nome,
           qtde_rodadas: this.torneio.qtde_rodadas,
+          ritmo_minutos: this.torneio.ritmo_minutos,
+          ritmo_incremento: this.torneio.ritmo_incremento,
+          data_inicio: this.torneio.data_inicio.toISOString()
         });
+
+        this.ganhadores = this.torneioService.processarRodada(this.torneio);
       }
     }
 
@@ -58,6 +69,9 @@ export class TorneioPage implements OnInit {
   salvar() {
     this.torneio.nome = this.torneioForm.value.nome;
     this.torneio.qtde_rodadas = this.torneioForm.value.qtde_rodadas;
+    this.torneio.ritmo_minutos = this.torneioForm.value.ritmo_minutos;
+    this.torneio.ritmo_incremento = this.torneioForm.value.ritmo_incremento;
+    this.torneio.data_inicio = new Date(Date.parse(this.torneioForm.value.data_inicio));
     if (!this.torneio.id) {
       if (this.torneioService.criarTorneio(this.torneio)) {
         this.voltar()
@@ -90,8 +104,6 @@ export class TorneioPage implements OnInit {
       rated: true,
       since: ipRodada.data_inicio.getTime()
     });
-
-    console.log(vaResultados);
   }
 
 
@@ -99,6 +111,7 @@ export class TorneioPage implements OnInit {
     let vaJogador = new Jogador();
     vaJogador.nome = this.jogadorForm.value.nome;
     vaJogador.username = this.jogadorForm.value.username;
+    vaJogador.rating = this.jogadorForm.value.rating;
     this.torneio.jogadores.push(vaJogador);
 
     this.jogadorForm.reset();

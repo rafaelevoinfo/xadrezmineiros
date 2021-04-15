@@ -9,7 +9,12 @@
 </ion-header>
 
 <ion-content>
-  <ion-button expand="block" color="success" (click)="iniciar()">Iniciar torneio</ion-button>
+  <div *ngIf="torneio?.status==2">
+    <p>1ª Lugar: {{ganhadores[0]?.nome}}</p>
+    <p>2ª Lugar: {{ganhadores[1]?.nome}}</p>
+    <p>3ª Lugar: {{ganhadores[2]?.nome}}</p>
+  </div>
+  <ion-button expand="block" *ngIf="torneio?.status==0" color="success" (click)="iniciar()">Iniciar torneio</ion-button>
   <form [formGroup]='torneioForm'>
     <ion-item>
       <ion-input formControlName="nome" [value]="torneio?.nome" placeholder="Nome do torneio"></ion-input>
@@ -18,6 +23,20 @@
       <ion-input formControlName="qtde_rodadas" type="number" [value]="torneio?.qtde_rodadas"
         placeholder="Número de rodadas">
       </ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input formControlName="ritmo_minutos" type="number" [value]="torneio?.ritmo_minutos"
+        placeholder="Ritmo de jogo">
+      </ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input formControlName="ritmo_incremento" type="number" [value]="torneio?.ritmo_incremento"
+        placeholder="Incremento">
+      </ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-datetime displayFormat="DD/MM/YYYY" formControlName="data_inicio" placeholder="Data de Inicio">
+      </ion-datetime>
     </ion-item>
   </form>
   <app-tab-control backgroundColor="var(--ion-color-light)">
@@ -43,6 +62,7 @@
       <form *ngIf="torneio?.status==0" [formGroup]='jogadorForm' (submit)="adicionarJogador()">
         <ion-input formControlName="nome" placeholder="Nome do jogador"></ion-input>
         <ion-input formControlName="username" placeholder="Username do Lichess"></ion-input>
+        <ion-input formControlName="rating" placeholder="Rating do Lichess"></ion-input>
         <ion-button type="submit" [disabled]="jogadorForm.invalid" size="small">Entrar no torneio
         </ion-button>
       </form>

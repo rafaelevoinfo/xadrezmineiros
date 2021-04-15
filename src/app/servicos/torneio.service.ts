@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentData, DocumentReference } from '@angular/fire/firestore';
 import { Jogador, Partida, Rodada, Torneio } from '../Models/types';
-import * as TournamentOrganizer from 'tournament-organizer';
-//import { TournamentOrganizer } from "../../../node_modules/tournament-organizer";
+import { Swiss, EventManager } from 'tournament-organizer';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +10,7 @@ export class TorneioService {
   torneioManager;
 
   constructor(private firestore: AngularFirestore) {
-    this.torneioManager = new TournamentOrganizer.EventManager();
+    this.torneioManager = new EventManager();
   }
 
   async buscarTorneios(ipSomenteAtivos: boolean): Promise<Torneio[]> {
@@ -55,59 +54,93 @@ export class TorneioService {
     }
   }
 
-  async iniciarTorneio(ipTorneio: Torneio): Promise<boolean> {
-    ipTorneio.status = 1;
-    ipTorneio.data_inicio = new Date();
+  criarTorneioSuico(ipTorneio: Torneio): Swiss {
     const vaTorneioSwiss = this.torneioManager.createTournament(null, {
       name: ipTorneio.nome,
-      format: 'swiss'
+      format: 'swiss',
+      seededPlayers: true,
+      numberOfRounds: ipTorneio.qtde_rodadas,
     });
 
     for (const vaJogador of ipTorneio.jogadores) {
-      vaTorneioSwiss.addPlayer(vaJogador.nome, vaJogador.username);
+      vaTorneioSwiss.addPlayer(vaJogador.nome, vaJogador.username, vaJogador.rating);
     }
 
     vaTorneioSwiss.startEvent();
 
-    let vaMatches = vaTorneioSwiss.activeMatches();
-    if ((vaMatches) && (vaMatches.length > 0)) {
-      ipTorneio.rodada_atual = 1;
-      let vaRodada = new Rodada();
-      vaRodada.data_inicio = new Date();
-      vaRodada.numero = vaMatches[0].round;//sera sempre o mesmo valor
-      for (const vaMatch of vaMatches) {
-        let vaPartida = new Partida();
-        vaPartida.jogadorBrancas = new Jogador();
-        vaPartida.jogadorBrancas.nome = vaMatch.playerOne.alias;
-        vaPartida.jogadorBrancas.username = vaMatch.playerOne.id;
+    return vaTorneioSwiss;
+  }
 
-        vaPartida.jogadorNegras = new Jogador();
-        vaPartida.jogadorNegras.nome = vaMatch.playerTwo.alias;
-        vaPartida.jogadorNegras.username = vaMatch.playerTwo.id;
+  async iniciarTorneio(ipTorneio: Torneio): Promise<boolean> {
+    ipTorneio.status = 1;
+    this.processarRodada(ipTorneio);
 
-        vaRodada.partidas.push(vaPartida);
+    return await this.atualizarTorneio(ipTorneio);
+  }
+
+  processarRodada(ipTorneio: Torneio): Jogador[] {
+    let vaTorneioSwiss = this.criarTorneioSuico(ipTorneio);
+    if ((ipTorneio.rodadas) && (ipTorneio.rodadas.length > 0)) {
+      for (let i = 0; i < ipTorneio.rodadas.length; i++) {
+        let vaRodada = ipTorneio.rodadas[i];
+        let vaMatches = vaTorneioSwiss.activeMatches(i + 1);
+        for (const vaMatch of vaMatches) {
+          let vaPartida = vaRodada.partidas.find((p) => {
+            return (p.jogadorBrancas.username == vaMatch.playerOne.id) && (p.jogadorNegras.username == vaMatch.playerTwo.id)
+          });
+
+          if (vaPartida) {
+            let vaPlayerOneWins = vaPartida.resultado == '1-0' ? 1 : 0;
+            let vaPlayerTwoWins = vaPartida.resultado == '0-1' ? 1 : 0;
+
+            vaTorneioSwiss.result(vaMatch, vaPlayerOneWins, vaPlayerTwoWins);
+          }
+        }
       }
-
-      ipTorneio.rodadas.push(vaRodada);
     }
 
-    return this.atualizarTorneio(ipTorneio);
+    if ((vaTorneioSwiss.currentRound >= 0) && vaTorneioSwiss.active) {
+      if (ipTorneio.rodada_atual < vaTorneioSwiss.currentRound) {
+        let vaMatches = vaTorneioSwiss.activeMatches(vaTorneioSwiss.currentRound);
 
+        if ((vaMatches) && (vaMatches.length > 0)) {
+          let vaRodada = new Rodada();
+          vaRodada.data_inicio = new Date();
+          vaRodada.numero = vaMatches[0].round;//sera sempre o mesmo valor
+          ipTorneio.rodada_atual = vaRodada.numero;
+          for (const vaMatch of vaMatches) {
+            let vaPartida = new Partida();
+            vaPartida.jogadorBrancas = new Jogador();
+            vaPartida.jogadorBrancas.nome = vaMatch.playerOne.alias;
+            vaPartida.jogadorBrancas.username = vaMatch.playerOne.id;
 
+            vaPartida.jogadorNegras = new Jogador();
+            vaPartida.jogadorNegras.nome = vaMatch.playerTwo.alias;
+            vaPartida.jogadorNegras.username = vaMatch.playerTwo.id;
 
-    /*console.log(active);
+            vaRodada.partidas.push(vaPartida);
+          }
 
-    tourney.result(active[0], 1, 0);
-    tourney.result(active[1], 0, 1);
+          ipTorneio.rodadas.push(vaRodada);
+        }
+      }
+    } else {
+      ipTorneio.status = 2;
+    }
 
-    active = tourney.activeMatches();
-    console.log(active);
+    let vaJogadores: Jogador[] = [];
+    //pega o ranking
+    let vaPlayers = vaTorneioSwiss.standings(true);
+    if (vaPlayers) {
+      for (const vaPlayer of vaPlayers) {
+        let vaJogador: Jogador = new Jogador();
+        vaJogador.nome = vaPlayer.alias;
+        vaJogador.username = vaPlayer.id;
+        vaJogadores.push(vaJogador);
+      }
+    }
 
-    tourney.result(active[0], 1, 0);
-    tourney.result(active[1], 0, 1);
-
-    console.log(tourney.standings());*/
-
+    return vaJogadores;
   }
 
   async criarTorneio(ipTorneio: Torneio): Promise<string> {
@@ -175,6 +208,7 @@ export class TorneioService {
         vaRodada.data_inicio = new Date(vaDataSec.seconds * 1000);
       }
 
+      console.log(vaTorneio);
       return vaTorneio;
     }
   }

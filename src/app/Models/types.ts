@@ -1,6 +1,7 @@
 export class Jogador {
     nome: string;
     username: string;
+    rating?: number;
 }
 
 export class Partida {
@@ -29,11 +30,18 @@ export class Torneio {
     jogadores: Jogador[];
     rodadas: Rodada[];
     rodada_atual: number;
+    ritmo_minutos: number;
+    ritmo_incremento: number;
 
     constructor() {
         this.jogadores = [];
         this.rodadas = [];
         this.status = 0;
+        this.rodada_atual = -1;
+    }
+
+    get finalizado(): boolean {
+        return this.status == 2;
     }
 
     getDescricaoStatus(): string {
