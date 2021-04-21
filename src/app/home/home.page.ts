@@ -12,4 +12,12 @@ export class HomePage implements OnInit {
   ngOnInit() {
   }
 
+  abrirFace() {
+    window.location.href = "https://www.facebook.com/XadrezMineiros-101407585326095";
+  }
+
+  abrirInstagram() {
+    window.location.href = "https://www.instagram.com/xadrezmineiros/";
+  }
+
 }

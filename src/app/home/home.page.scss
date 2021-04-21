@@ -1,0 +1,33 @@
+.logo {
+  width: 80%;
+  height: auto;
+  max-width: 300px;
+  max-height: 300px;
+}
+
+.alinhado_centro {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+}
+
+.linha {
+  display: inline;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  background-color: white;
+  height: 2px;
+}
+
+.titulo {
+  font-size: 7rem;
+  font-family: 'Italianno', 'Helvetica Neue', sans-serif;
+  color: white;
+  background-color: var(--ion-color-dark);
+}
+
+p {
+  padding: 1rem;
+  font-size: 3rem;
+  font-family: 'Italianno', 'Helvetica Neue', sans-serif;
+}

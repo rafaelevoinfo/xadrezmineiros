@@ -1,15 +1,15 @@
 <ion-app>
   <!--Ionic Tab funciona como um ion-router-outlet-->
   <ion-tabs>
-    <ion-tab-bar slot="top">
-      <ion-tab-button tab="home" actived>
-        <ion-icon name="triangle"></ion-icon>
-        <ion-label>Home</ion-label>
+    <ion-tab-bar slot="top" color="dark">
+      <ion-tab-button tab="home" layout="icon-start" activated>
+        <ion-icon src="assets/icon/home.svg"></ion-icon>
+        <span>Início</span>
       </ion-tab-button>
 
-      <ion-tab-button tab="torneios">
-        <ion-icon name="ellipse"></ion-icon>
-        <ion-label>Torneios</ion-label>
+      <ion-tab-button tab="torneios" layout="icon-start">
+        <ion-icon src="assets/icon/torneio.svg"></ion-icon>
+        <span>Torneios</span>
       </ion-tab-button>
     </ion-tab-bar>
   </ion-tabs>

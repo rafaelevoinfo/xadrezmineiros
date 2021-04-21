@@ -1,9 +1,26 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>home</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content color="dark">
+  <div class="d-flex mx-auto logo">
+    <img src="assets/logo.png">
+  </div>
+  <div class="alinhado_centro">
+    <div class="flex-grow-1 linha"></div>
+    <span class="titulo">Quem Somos</span>
+    <div class="flex-grow-1 linha"></div>
+  </div>
+  <div>
+    <p>Somos atualmente um grupo de xadrez com intuito de aprimoramento nesse maravilho jogo.
+      Curte xadrez? junte-se a nós e vamos evoluir juntos!
+    </p>
+  </div>
+  <div class="alinhado_centro">
+    <div class="flex-grow-1 linha"></div>
+    <ion-button (click)="abrirFace()" color="dark">
+      <ion-icon slot="icon-only" src="assets/icon/facebook.svg"></ion-icon>
+    </ion-button>
+    <ion-button (click)="abrirInstagram()" color="dark">
+      <ion-icon slot="icon-only" src="assets/icon/instagram.svg"></ion-icon>
+    </ion-button>
+    <div class="flex-grow-1 linha"></div>
+  </div>
 
-<ion-content>
-  Home
 </ion-content>

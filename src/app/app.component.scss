@@ -1,0 +1,19 @@
+span {
+  font-size: 2rem;
+}
+
+ion-icon {
+  font-size: 32px;
+  min-width: 32px;
+  padding: 2px;
+}
+
+ion-tab-button {
+  max-width: none !important;
+}
+
+.tab-selected {
+  span {
+    font-size: 2.2rem;
+  }
+}

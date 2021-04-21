@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentData, DocumentReference } from '@angular/fire/firestore';
 import { Jogador, Partida, Rodada, Torneio } from '../Models/types';
 import { Swiss, EventManager } from 'tournament-organizer';
+import { LichessApiService } from './lichess-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,8 @@ import { Swiss, EventManager } from 'tournament-organizer';
 export class TorneioService {
   torneioManager;
 
-  constructor(private firestore: AngularFirestore) {
+  constructor(private firestore: AngularFirestore,
+    private chessApi: LichessApiService) {
     this.torneioManager = new EventManager();
   }
 
@@ -68,6 +70,26 @@ export class TorneioService {
 
     vaTorneioSwiss.startEvent();
 
+    //vamos alimentar o vaTorneioSwiss com as informações que ja temos
+    if ((ipTorneio.rodadas) && (ipTorneio.rodadas.length > 0)) {
+      for (let i = 0; i < ipTorneio.rodadas.length; i++) {
+        let vaRodada = ipTorneio.rodadas[i];
+        let vaMatches = vaTorneioSwiss.activeMatches(i + 1);
+        for (const vaMatch of vaMatches) {
+          let vaPartida = vaRodada.partidas.find((p) => {
+            return (p.jogadorBrancas.username == vaMatch.playerOne.id) && (p.jogadorNegras.username == vaMatch.playerTwo.id)
+          });
+
+          if ((vaPartida) && (vaPartida.resultado)) {
+            let vaPlayerOneWins = vaPartida.resultado == '1-0' ? 1 : 0;
+            let vaPlayerTwoWins = vaPartida.resultado == '0-1' ? 1 : 0;
+
+            vaTorneioSwiss.result(vaMatch, vaPlayerOneWins, vaPlayerTwoWins);
+          }
+        }
+      }
+    }
+
     return vaTorneioSwiss;
   }
 
@@ -78,28 +100,13 @@ export class TorneioService {
     return await this.atualizarTorneio(ipTorneio);
   }
 
-  processarRodada(ipTorneio: Torneio): Jogador[] {
+  processarRodada(ipTorneio: Torneio): Boolean {
+    let vaResult = false;
     let vaTorneioSwiss = this.criarTorneioSuico(ipTorneio);
-    if ((ipTorneio.rodadas) && (ipTorneio.rodadas.length > 0)) {
-      for (let i = 0; i < ipTorneio.rodadas.length; i++) {
-        let vaRodada = ipTorneio.rodadas[i];
-        let vaMatches = vaTorneioSwiss.activeMatches(i + 1);
-        for (const vaMatch of vaMatches) {
-          let vaPartida = vaRodada.partidas.find((p) => {
-            return (p.jogadorBrancas.username == vaMatch.playerOne.id) && (p.jogadorNegras.username == vaMatch.playerTwo.id)
-          });
 
-          if (vaPartida) {
-            let vaPlayerOneWins = vaPartida.resultado == '1-0' ? 1 : 0;
-            let vaPlayerTwoWins = vaPartida.resultado == '0-1' ? 1 : 0;
-
-            vaTorneioSwiss.result(vaMatch, vaPlayerOneWins, vaPlayerTwoWins);
-          }
-        }
-      }
-    }
-
+    //vamos pegar a proxima rodada se disponivel
     if ((vaTorneioSwiss.currentRound >= 0) && vaTorneioSwiss.active) {
+      //se true, indica que uma nova rodada começou
       if (ipTorneio.rodada_atual < vaTorneioSwiss.currentRound) {
         let vaMatches = vaTorneioSwiss.activeMatches(vaTorneioSwiss.currentRound);
 
@@ -122,13 +129,19 @@ export class TorneioService {
           }
 
           ipTorneio.rodadas.push(vaRodada);
+          vaResult = true;
         }
       }
     } else {
       ipTorneio.status = 2;
+      vaResult = true;
     }
+    return vaResult;
+  }
 
+  ranking(ipTorneio: Torneio) {
     let vaJogadores: Jogador[] = [];
+    let vaTorneioSwiss = this.criarTorneioSuico(ipTorneio);
     //pega o ranking
     let vaPlayers = vaTorneioSwiss.standings(true);
     if (vaPlayers) {
@@ -143,7 +156,38 @@ export class TorneioService {
     return vaJogadores;
   }
 
-  async criarTorneio(ipTorneio: Torneio): Promise<string> {
+  async buscarResultados(ipTorneio: Torneio): Promise<boolean> {
+    let vaResult = false;
+    let vaRodada = ipTorneio.rodadas[ipTorneio.rodada_atual];
+    if (vaRodada) {
+      for (const vaPartida of vaRodada.partidas) {
+        if (await this.pegarResultado(vaRodada, vaPartida)) {
+          vaResult = true;
+        }
+      }
+    }
+
+    return vaResult;
+  }
+
+  async pegarResultado(ipRodada: Rodada, ipPartida: Partida): Promise<boolean> {
+    let vaResultados = await this.chessApi.pegarResultadoJogos(ipPartida.jogadorBrancas.username, {
+      vs: ipPartida.jogadorNegras.username,
+      max: 1,
+      rated: true,
+      since: ipRodada.data_inicio.getTime()
+    });
+
+    if (vaResultados && (vaResultados.length > 0)) {
+      ipPartida.resultado = vaResultados[0].resultado;
+      ipPartida.link = vaResultados[0].link_partida;
+      return true;
+    }
+
+    return false;
+  }
+
+  async incluirTorneio(ipTorneio: Torneio): Promise<string> {
     //nao se pode passar objetos customizados (criados com uso do new). Tem sempre que ser um Object
     let vaDocument = await this.firestore.collection('torneios').ref.add(this.createObject(ipTorneio));
     return vaDocument.id;

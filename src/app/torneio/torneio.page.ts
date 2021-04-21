@@ -19,7 +19,6 @@ export class TorneioPage implements OnInit {
 
   constructor(private route: ActivatedRoute,
     private torneioService: TorneioService,
-    private chessApi: LichessApiService,
     private fb: FormBuilder,
     private navCtrl: NavController) { }
 
@@ -56,7 +55,17 @@ export class TorneioPage implements OnInit {
           data_inicio: this.torneio.data_inicio.toISOString()
         });
 
-        this.ganhadores = this.torneioService.processarRodada(this.torneio);
+        if (this.torneio.status == 1) {
+          let vaMudou = this.torneioService.processarRodada(this.torneio);
+          let vaAchou = await this.torneioService.buscarResultados(this.torneio);
+          if ((vaMudou) || (vaAchou)) {
+            this.salvar();
+          }
+        }
+
+        if (this.torneio.status == 2) {
+          this.ganhadores = this.torneioService.ranking(this.torneio);
+        }
       }
     }
 
@@ -67,19 +76,18 @@ export class TorneioPage implements OnInit {
   }
 
   salvar() {
+    if (this.torneio.status < 0) {
+      this.torneio.status = 0;
+    }
     this.torneio.nome = this.torneioForm.value.nome;
     this.torneio.qtde_rodadas = this.torneioForm.value.qtde_rodadas;
     this.torneio.ritmo_minutos = this.torneioForm.value.ritmo_minutos;
     this.torneio.ritmo_incremento = this.torneioForm.value.ritmo_incremento;
     this.torneio.data_inicio = new Date(Date.parse(this.torneioForm.value.data_inicio));
     if (!this.torneio.id) {
-      if (this.torneioService.criarTorneio(this.torneio)) {
-        this.voltar()
-      }
+      this.torneioService.incluirTorneio(this.torneio)
     } else {
-      if (this.torneioService.atualizarTorneio(this.torneio)) {
-        this.voltar();
-      }
+      this.torneioService.atualizarTorneio(this.torneio);
     }
   }
 
@@ -98,12 +106,9 @@ export class TorneioPage implements OnInit {
   }
 
   async pegarResultado(ipRodada: Rodada, ipPartida: Partida) {
-    let vaResultados = await this.chessApi.pegarResultadoJogos(ipPartida.jogadorBrancas.username, {
-      vs: ipPartida.jogadorNegras.username,
-      max: 1,
-      rated: true,
-      since: ipRodada.data_inicio.getTime()
-    });
+    if (await this.torneioService.pegarResultado(ipRodada, ipPartida)) {
+      this.salvar();
+    }
   }
 
 

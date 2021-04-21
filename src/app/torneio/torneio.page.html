@@ -1,48 +1,40 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="end">
-      <ion-button type="submit" [disabled]="torneioForm.invalid" (click)="salvar()">Salvar</ion-button>
-    </ion-buttons>
-    <ion-title>Torneio</ion-title>
-
-  </ion-toolbar>
-</ion-header>
-
-<ion-content>
+<ion-content color="dark">
   <div *ngIf="torneio?.status==2">
     <p>1ª Lugar: {{ganhadores[0]?.nome}}</p>
     <p>2ª Lugar: {{ganhadores[1]?.nome}}</p>
     <p>3ª Lugar: {{ganhadores[2]?.nome}}</p>
   </div>
-  <ion-button expand="block" *ngIf="torneio?.status==0" color="success" (click)="iniciar()">Iniciar torneio</ion-button>
   <form [formGroup]='torneioForm'>
-    <ion-item>
+    <ion-item color="dark">
       <ion-input formControlName="nome" [value]="torneio?.nome" placeholder="Nome do torneio"></ion-input>
     </ion-item>
-    <ion-item>
+    <ion-item color="dark">
       <ion-input formControlName="qtde_rodadas" type="number" [value]="torneio?.qtde_rodadas"
         placeholder="Número de rodadas">
       </ion-input>
     </ion-item>
-    <ion-item>
+    <ion-item color="dark">
       <ion-input formControlName="ritmo_minutos" type="number" [value]="torneio?.ritmo_minutos"
         placeholder="Ritmo de jogo">
       </ion-input>
     </ion-item>
-    <ion-item>
+    <ion-item color="dark">
       <ion-input formControlName="ritmo_incremento" type="number" [value]="torneio?.ritmo_incremento"
         placeholder="Incremento">
       </ion-input>
     </ion-item>
-    <ion-item>
+    <ion-item color="dark">
       <ion-datetime displayFormat="DD/MM/YYYY" formControlName="data_inicio" placeholder="Data de Inicio">
       </ion-datetime>
     </ion-item>
   </form>
-  <app-tab-control backgroundColor="var(--ion-color-light)">
-    <app-tab-bar backgroundColor="white" backgroundColorSelected="var(--ion-color-dark)" activeIdentificador="rodadas">
-      <app-tab-item label="Rodadas" identificador="rodadas"> </app-tab-item>
-      <app-tab-item label="Jogadores" identificador="jogadores"></app-tab-item>
+  <app-tab-control backgroundColor="var(--ion-color-dark)">
+    <app-tab-bar backgroundColor="var(--ion-color-dark)" backgroundColorSelected="var(--ion-color-light)"
+      activeIdentificador="rodadas">
+      <app-tab-item label="Rodadas" icon="assets/icon/rodadas.svg" iconSelected="assets/icon/rodadas.svg"
+        identificador="rodadas"> </app-tab-item>
+      <app-tab-item label="Jogadores" icon="assets/icon/jogadores.svg" iconSelected="assets/icon/jogadores.svg"
+        identificador="jogadores"></app-tab-item>
     </app-tab-bar>
 
     <app-tab-content identificador="rodadas" active="true">
@@ -52,7 +44,8 @@
           <ion-item *ngFor="let vaPartida of torneio.rodadas[i].partidas">
             <a href="{{vaPartida.link}}" class="partida">{{vaPartida.jogadorBrancas.nome}} vs
               {{vaPartida.jogadorNegras.nome}} <br />{{vaPartida.resultado}}</a>
-            <ion-button slot="end" (click)="pegarResultado(vaRodada, vaPartida)">Pegar resultado</ion-button>
+            <ion-button *ngIf="!vaPartida.resultado" slot="end" (click)="pegarResultado(vaRodada, vaPartida)">Pegar
+              resultado</ion-button>
           </ion-item>
         </ion-list>
       </div>
@@ -75,5 +68,11 @@
       </ion-list>
     </app-tab-content>
   </app-tab-control>
-  <ion-button expand="block" color="danger" (click)="excluir()">Excluir torneio</ion-button>
+  <ion-button expand="block" *ngIf="torneio?.status == 1" color="danger" (click)="excluir()">Excluir torneio
+  </ion-button>
+  <ion-button expand="block" *ngIf="torneio?.status == 0" color="success" (click)="iniciar()">Iniciar torneio
+  </ion-button>
+  <ion-button expand="block" *ngIf="torneio?.status < 0" [disabled]="torneioForm.invalid" color="primary"
+    (click)="salvar()">Salvar</ion-button>
+  <ion-button expand="block" color="secondary" (click)="voltar()">Retornar</ion-button>
 </ion-content>

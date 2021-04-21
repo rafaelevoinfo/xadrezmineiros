@@ -36,7 +36,7 @@ export class Torneio {
     constructor() {
         this.jogadores = [];
         this.rodadas = [];
-        this.status = 0;
+        this.status = -1;
         this.rodada_atual = -1;
     }
 
