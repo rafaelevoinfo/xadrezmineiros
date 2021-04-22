@@ -15,6 +15,7 @@ export interface TabInfo {
 export class TabItemComponent implements OnInit {
   _checked: boolean;
   _backgroundColorSelected: string;
+  _backgroundColor: string;
 
 
   @Input() identificador: string;
@@ -23,8 +24,13 @@ export class TabItemComponent implements OnInit {
   @Input() label: string;
   @Input() set checked(value: boolean) {
     this._checked = value;
-    //console.log(this.identificador, this._checked);
+    if (environment.production) {
+      console.log('Atualizando valor checked do indentificador ' + this.identificador);
+    }
     this.update();
+  }
+  @Input() set backgroundColor(value: string) {
+    this._backgroundColor = value;
   }
   @Input() set backgroundColorSelected(value: string) {
     this._backgroundColorSelected = value;
@@ -41,6 +47,10 @@ export class TabItemComponent implements OnInit {
     return this._backgroundColorSelected;
   }
 
+  get backgroundColor(): string {
+    return this._backgroundColor;
+  }
+
   constructor() {
 
   }
@@ -53,14 +63,6 @@ export class TabItemComponent implements OnInit {
     if (!environment.production) {
       console.log('Atualizando icone do identificador', this.identificador, this.checked);
     }
-
-    // if ((this.input) && (this.input.nativeElement)) {
-    //   if (!this._checked) {
-    //     this.input.nativeElement.style = `content: url(${this.icon});`
-    //   } else {
-    //     this.input.nativeElement.style = `content: url(${this.iconSelected});`
-    //   }
-    // }
   }
 
   ngAfterViewInit() {
@@ -71,10 +73,20 @@ export class TabItemComponent implements OnInit {
     if (!environment.production) {
       console.log('Item clicado', this.identificador);
     }
+
+    this.notificarAlteracao(event.target.checked);
+  }
+
+  notificarAlteracao(ipChecked) {
     this.onChange.emit({
       identificador: this.identificador,
-      checked: event.target.checked
+      checked: ipChecked
     });
+  }
+
+  divClick() {
+    this.input.nativeElement.checked = !this.input.nativeElement.checked;
+    this.notificarAlteracao(this.input.nativeElement.checked);
   }
 
 

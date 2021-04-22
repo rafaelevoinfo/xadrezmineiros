@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
+import { Jogador } from '../Models/types';
 
 export class GameResult {
   jogadorBrancas: string;
   jogadorNegras: string;
+  ritmo: string;
   resultado: string;
   link_partida: string;
 }
@@ -18,6 +20,17 @@ export class LichessApiService {
   }
 
 
+  async buscarUsuario(ipUsername: string) {
+    const vaResponse = await window.fetch(this.baseUrl + 'user/' + ipUsername, {
+      method: 'GET'
+    });
+
+    if (vaResponse.status == 200) {
+      return await vaResponse.json();
+    }
+
+  }
+
   addOption(ipCurrentOptions: string, ipNewOption: string): string {
     if (ipCurrentOptions) {
       ipCurrentOptions += '&' + ipNewOption;
@@ -27,6 +40,7 @@ export class LichessApiService {
 
     return ipCurrentOptions;
   }
+
 
   async pegarResultadoJogos(ipUsername: string, options: any = null): Promise<GameResult[]> {
     //
@@ -82,9 +96,27 @@ export class LichessApiService {
 
           if (vaLinha.startsWith('[Result')) {
             vaGame.resultado = vaLinha.split('"')[1];
+          }
+
+          if ((options.ritmo) && (vaLinha.startsWith('[TimeControl'))) {
+            let vaRitmoRetornado = vaLinha.split('"')[1];
+            //o ritmo retornado esta em segundos, entao vamos converter
+            let vaRitmo = options.ritmo.split('+');
+            if ((vaRitmo) && (vaRitmo.length = 2)) {
+              let vaMinutos = vaRitmo[0];
+              let vaIncremento = vaRitmo[1];
+              let vaRitmoConvertido = (vaMinutos * 60) + '+' + vaIncremento;
+
+              if (vaRitmoConvertido != options.ritmo) {
+                i = j + 1;
+                break;
+              }
+            }
+          }
+
+          if (vaLinha.startsWith('[Termination')) {
             i = j + 1;
             vaGames.push(vaGame);
-
             break;
           }
         }

@@ -32,9 +32,7 @@ export class TorneioPage implements OnInit {
     });
 
     this.jogadorForm = this.fb.group({
-      nome: ['', [Validators.required]],
       username: ['', [Validators.required]],
-      rating: ['', [Validators.required]],
     });
   }
 
@@ -106,21 +104,20 @@ export class TorneioPage implements OnInit {
   }
 
   async pegarResultado(ipRodada: Rodada, ipPartida: Partida) {
-    if (await this.torneioService.pegarResultado(ipRodada, ipPartida)) {
+    if (await this.torneioService.pegarResultado(this.torneio, ipRodada, ipPartida)) {
       this.salvar();
     }
   }
 
 
-  adicionarJogador() {
-    let vaJogador = new Jogador();
-    vaJogador.nome = this.jogadorForm.value.nome;
-    vaJogador.username = this.jogadorForm.value.username;
-    vaJogador.rating = this.jogadorForm.value.rating;
-    this.torneio.jogadores.push(vaJogador);
-
-    this.jogadorForm.reset();
-
+  async adicionarJogador() {
+    let vaJogador = await this.torneioService.buscarJogador(this.jogadorForm.value.username);
+    if (vaJogador) {
+      this.torneio.jogadores.push(vaJogador);
+      this.salvar();
+    } else {
+      console.log('Username não encontrado');
+    }
   }
 
   voltar() {

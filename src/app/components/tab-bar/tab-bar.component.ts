@@ -65,6 +65,7 @@ export class TabBarComponent implements OnInit {
     if (this.tabItens) {
       for (const vaInnerTab of this.tabItens) {
         vaInnerTab.checked = vaInnerTab.identificador == this._activeIdentificador;
+        vaInnerTab.backgroundColor = this.backgroundColor;
         vaInnerTab.backgroundColorSelected = this.backgroundColorSelected;
       }
       this.tabChanged.emit(this._activeIdentificador);

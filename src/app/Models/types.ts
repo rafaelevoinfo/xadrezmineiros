@@ -44,6 +44,18 @@ export class Torneio {
         return this.status == 2;
     }
 
+    get ritmo(): string {
+        if (this.ritmo_minutos) {
+            if (this.ritmo_incremento) {
+                return this.ritmo_minutos.toString + '+' + this.ritmo_incremento.toString
+            } else {
+                return this.ritmo_minutos.toString + '+0'
+            }
+        } else {
+            return '';
+        }
+    }
+
     getDescricaoStatus(): string {
         switch (this.status) {
             case 0: return 'Criado';
