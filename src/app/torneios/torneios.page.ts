@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { NavController } from '@ionic/angular';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { IonCheckbox, NavController } from '@ionic/angular';
 import { Torneio } from '../Models/types';
 import { TorneioService } from '../servicos/torneio.service';
 
@@ -9,6 +9,8 @@ import { TorneioService } from '../servicos/torneio.service';
   styleUrls: ['./torneios.page.scss'],
 })
 export class TorneiosPage implements OnInit {
+
+  @ViewChild(IonCheckbox) chkTorneioFinalizados: IonCheckbox;
 
   private torneios: Torneio[];
   constructor(private torneioService: TorneioService,
@@ -20,7 +22,15 @@ export class TorneiosPage implements OnInit {
 
   }
   async ngAfterViewInit() {
-    this.torneios = await this.torneioService.buscarTorneios(true);
+
+  }
+
+  ionViewDidEnter() {
+    this.buscarTorneios();
+  }
+
+  async buscarTorneios() {
+    this.torneios = await this.torneioService.buscarTorneios(!this.chkTorneioFinalizados.checked);
   }
 
   abrirTorneio(ipTorneio: Torneio) {

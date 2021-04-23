@@ -39,6 +39,10 @@ export class TorneioService {
         }
       });
 
+      vaResult = vaResult.sort((t1, t2) => {
+        return t1.data_inicio.getTime() - t2.data_inicio.getTime()
+      })
+
       return vaResult;
 
     } catch (error) {
@@ -177,7 +181,7 @@ export class TorneioService {
 
   async buscarResultados(ipTorneio: Torneio): Promise<boolean> {
     let vaResult = false;
-    let vaRodada = ipTorneio.rodadas[ipTorneio.rodada_atual];
+    let vaRodada = ipTorneio.rodadas[ipTorneio.rodada_atual - 1];
     if (vaRodada) {
       for (const vaPartida of vaRodada.partidas) {
         if (await this.pegarResultado(ipTorneio, vaRodada, vaPartida)) {
@@ -210,6 +214,9 @@ export class TorneioService {
   async incluirTorneio(ipTorneio: Torneio): Promise<string> {
     //nao se pode passar objetos customizados (criados com uso do new). Tem sempre que ser um Object
     let vaDocument = await this.firestore.collection('torneios').ref.add(this.createObject(ipTorneio));
+    if (vaDocument) {
+      ipTorneio.id = vaDocument.id;
+    }
     return vaDocument.id;
   }
 
@@ -256,8 +263,6 @@ export class TorneioService {
       vaObj.rodadas.push(vaRodada);
     });
 
-    console.log('Objecto', vaObj);
-
     return vaObj;
   }
 
@@ -271,8 +276,6 @@ export class TorneioService {
         let vaDataSec: any = vaRodada.data_inicio;
         vaRodada.data_inicio = new Date(vaDataSec.seconds * 1000);
       }
-
-      console.log(vaTorneio);
       return vaTorneio;
     }
   }

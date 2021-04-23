@@ -76,6 +76,7 @@ export class LichessApiService {
 
     let vaGames: GameResult[] = [];
     let vaResult = await response.text();
+
     let vaLinhas = vaResult.split('\n');
     for (let i = 0; i < vaLinhas.length; i++) {
       let vaLinha = vaLinhas[i];
@@ -105,9 +106,8 @@ export class LichessApiService {
             if ((vaRitmo) && (vaRitmo.length = 2)) {
               let vaMinutos = vaRitmo[0];
               let vaIncremento = vaRitmo[1];
-              let vaRitmoConvertido = (vaMinutos * 60) + '+' + vaIncremento;
-
-              if (vaRitmoConvertido != options.ritmo) {
+              let vaRitmoConvertido = (vaMinutos * 60).toString() + '+' + vaIncremento.toString();
+              if (vaRitmoConvertido != vaRitmoRetornado) {
                 i = j + 1;
                 break;
               }
