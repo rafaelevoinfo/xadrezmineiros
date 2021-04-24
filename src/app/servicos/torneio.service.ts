@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, DocumentData, DocumentReference } from '@angular/fire/firestore';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { Jogador, Partida, Rodada, Torneio } from '../Models/types';
 import { Swiss, EventManager } from 'tournament-organizer';
 import { LichessApiService } from './lichess-api.service';

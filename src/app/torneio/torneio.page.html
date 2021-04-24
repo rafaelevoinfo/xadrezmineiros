@@ -38,7 +38,7 @@
         identificador="jogadores"></app-tab-item>
     </app-tab-bar>
 
-    <app-tab-content identificador="rodadas" active="true">
+    <app-tab-content identificador="rodadas">
       <div class="conteudo-ativo" *ngFor="let vaRodada of torneio?.rodadas;index as i">
         <p class="rodada">Rodada {{vaRodada.numero}} - {{vaRodada.data_inicio|date:'dd.MM.y'}}</p>
         <ion-list>
@@ -56,10 +56,13 @@
 
     <app-tab-content identificador="jogadores">
       <form class="conteudo-ativo" *ngIf="torneio?.status==0" [formGroup]='jogadorForm' (submit)="adicionarJogador()">
-        <ion-input formControlName="username" placeholder="Username do Lichess"></ion-input>
+        <ion-item lines="none">
+          <ion-input formControlName="username" placeholder="Username do Lichess"></ion-input>
+        </ion-item>
         <ion-button type="submit" [disabled]="jogadorForm.invalid" size="small">Entrar no torneio
         </ion-button>
       </form>
+
       <ion-list>
         <ion-item *ngFor="let vaJogador of torneio?.jogadores" lines="full">
           <ion-label>
@@ -72,14 +75,16 @@
       </ion-list>
     </app-tab-content>
   </app-tab-control>
-  <ion-button expand="block" *ngIf="(torneio?.status == 0) && (torneio?.jogadores?.length > 1)" color="success"
-    (click)="iniciar()">Iniciar torneio
-  </ion-button>
+  <ng-container *ngIf="authService.isLogado">
+    <ion-button expand="block" *ngIf="(torneio?.status == 0) && (torneio?.jogadores?.length > 1)" color="success"
+      (click)="iniciar()">Iniciar torneio
+    </ion-button>
 
-  <ion-button expand="block" *ngIf="torneio?.status >= 0" color="danger" (click)="excluir()">Excluir torneio
-  </ion-button>
+    <ion-button expand="block" *ngIf="torneio?.status >= 0" color="danger" (click)="excluir()">Excluir torneio
+    </ion-button>
 
-  <ion-button expand="block" *ngIf="torneio?.status <= 0" [disabled]="torneioForm.invalid" color="primary"
-    (click)="salvar()">Salvar</ion-button>
+    <ion-button expand="block" *ngIf="torneio?.status <= 0" [disabled]="torneioForm.invalid" color="primary"
+      (click)="salvar()">Salvar</ion-button>
+  </ng-container>
   <ion-button expand="block" color="secondary" (click)="voltar()">Retornar</ion-button>
 </ion-content>

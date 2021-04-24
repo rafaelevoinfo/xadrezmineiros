@@ -2,7 +2,7 @@
   <ion-item lines="none" color="dark">
     <ion-checkbox (ionChange)="buscarTorneios()"></ion-checkbox>Exibir torneios anteriores
   </ion-item>
-  <ion-button expand="block" routerDirection="forward" href="torneio">Criar novo torneio</ion-button>
+  <ion-button *ngIf="authService.isLogado" expand="block" (click)="criarTorneio()">Criar novo torneio </ion-button>
   <ion-list>
     <ion-item *ngFor="let vaTorneio of torneios" color="dark" lines="full" button (click)="abrirTorneio(vaTorneio)">
       <ion-label>

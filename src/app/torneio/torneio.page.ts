@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { Jogador, Partida, Rodada, Torneio } from '../Models/types';
+import { AuthService } from '../servicos/auth.service';
 import { LichessApiService } from '../servicos/lichess-api.service';
 import { OverlayService } from '../servicos/overlay.service';
 import { TorneioService } from '../servicos/torneio.service';
@@ -22,7 +23,8 @@ export class TorneioPage implements OnInit {
     private torneioService: TorneioService,
     private fb: FormBuilder,
     private navCtrl: NavController,
-    private overlayService: OverlayService) { }
+    private overlayService: OverlayService,
+    public authService: AuthService) { }
 
   ngOnInit() {
     this.torneioForm = this.fb.group({

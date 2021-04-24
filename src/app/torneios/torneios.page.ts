@@ -1,6 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { IonCheckbox, NavController } from '@ionic/angular';
 import { Torneio } from '../Models/types';
+import { AuthService } from '../servicos/auth.service';
 import { TorneioService } from '../servicos/torneio.service';
 
 @Component({
@@ -12,16 +14,20 @@ export class TorneiosPage implements OnInit {
 
   @ViewChild(IonCheckbox) chkTorneioFinalizados: IonCheckbox;
 
-  private torneios: Torneio[];
-  constructor(private torneioService: TorneioService,
+  public torneios: Torneio[];
+
+  constructor(
+    public authService: AuthService,
+    private torneioService: TorneioService,
     private navCtrl: NavController) {
 
   }
 
+
   ngOnInit() {
 
   }
-  async ngAfterViewInit() {
+  ngAfterViewInit() {
 
   }
 
@@ -35,6 +41,10 @@ export class TorneiosPage implements OnInit {
 
   abrirTorneio(ipTorneio: Torneio) {
     this.navCtrl.navigateForward(`/torneio/${ipTorneio.id}`);
+  }
+
+  criarTorneio() {
+    this.navCtrl.navigateForward('/torneio');
   }
 
 }

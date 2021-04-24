@@ -21,6 +21,10 @@ const routes: Routes = [
   {
     path: 'torneio/:id',
     loadChildren: () => import('./torneio/torneio.module').then(m => m.TorneioPageModule)
+  },
+  {
+    path: 'login',
+    loadChildren: () => import('./login/login.module').then( m => m.LoginPageModule)
   }
 
 ];
