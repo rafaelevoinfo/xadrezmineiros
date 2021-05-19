@@ -28,20 +28,12 @@ input+label {
     width: 32px;
     height: auto;
   }
-
-  input+label {
-    font-size: .8rem;
-  }
 }
 
 @media (min-width:601px) {
   .radio-item input {
     width: 48px;
     height: auto;
-  }
-
-  input+label {
-    font-size: 1rem;
   }
 }
 

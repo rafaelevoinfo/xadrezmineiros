@@ -64,6 +64,10 @@ export class LichessApiService {
         vaOptions = this.addOption(vaOptions, 'rated=' + options.rated);
       }
 
+      if (options.color) {
+        vaOptions = this.addOption(vaOptions, 'color=' + options.color);
+      }
+
       if (vaOptions) {
         vaUrl += '?' + vaOptions;
       }

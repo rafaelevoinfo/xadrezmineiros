@@ -200,7 +200,8 @@ export class TorneioService {
       max: 1,
       rated: true,
       since: ipRodada.data_inicio.getTime(),
-      ritmo: ipTorneio.ritmo
+      ritmo: ipTorneio.ritmo,
+      color: 'white'
     });
 
     if (vaResultados && (vaResultados.length > 0)) {

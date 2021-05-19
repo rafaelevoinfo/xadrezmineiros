@@ -24,7 +24,7 @@ export class TabItemComponent implements OnInit {
   @Input() label: string;
   @Input() set checked(value: boolean) {
     this._checked = value;
-    if (environment.production) {
+    if (!environment.production) {
       console.log('Atualizando valor checked do indentificador ' + this.identificador);
     }
     this.update();
