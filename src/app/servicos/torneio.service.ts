@@ -66,6 +66,7 @@ export class TorneioService {
       name: ipTorneio.nome,
       format: 'swiss',
       dutch: true,
+      seedOrder: "des",
       seededPlayers: true,
       numberOfRounds: ipTorneio.qtde_rodadas,
     });
