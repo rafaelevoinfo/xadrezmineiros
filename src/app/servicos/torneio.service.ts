@@ -65,6 +65,7 @@ export class TorneioService {
     const vaTorneioSwiss = this.torneioManager.createTournament(null, {
       name: ipTorneio.nome,
       format: 'swiss',
+      dutch: true,
       seededPlayers: true,
       numberOfRounds: ipTorneio.qtde_rodadas,
     });
