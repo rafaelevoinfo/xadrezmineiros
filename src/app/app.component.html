@@ -1,22 +1,21 @@
 <ion-app>
-  <!--Ionic Tab funciona como um ion-router-outlet-->
-  <ion-tabs>
-    <ion-tab-bar slot="top" color="dark">
-      <ion-tab-button tab="home" layout="icon-start" activated>
-        <ion-icon src="assets/icon/home.svg"></ion-icon>
-        <span>Início</span>
-      </ion-tab-button>
+  <header>
+    <div class="menu">
+   
+      <ion-button (click)="onClick()">
+        <ion-icon slot="start" src="assets/icon/home.svg"></ion-icon>
+        XadrezMineiros
+      </ion-button>
 
-      <ion-tab-button tab="torneios" layout="icon-start">
-        <ion-icon src="assets/icon/torneio.svg"></ion-icon>
-        <span>Torneios</span>
-      </ion-tab-button>
+      <ion-button (click)="onClick()">
+        Torneios
+      </ion-button>
+      <ion-button class="login">
+        Login
+      </ion-button>
+    </div>
+  </header>
 
-      <ion-tab-button tab="login" layout="icon-start">
-        <ion-icon name="person-outline"></ion-icon>
-        <span>Login</span>
-      </ion-tab-button>
-    </ion-tab-bar>
-  </ion-tabs>
+  <ion-router-outlet></ion-router-outlet>
 
 </ion-app>

@@ -29,6 +29,10 @@ app-tab-item {
   flex-grow: 1;
 }
 
+ion-content{
+  font-family: Segoe UI, Roboto, sans-serif;
+}
+
 @media screen and (max-width: 1000px) {
   html {
     font-size: 14px;
