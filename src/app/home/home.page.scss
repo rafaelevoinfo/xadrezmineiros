@@ -4,7 +4,7 @@
   top: 0;
   width: 100vw;
   height: 100vh;
-  background: linear-gradient(135deg, #000000 0.6%, rgba(255, 255, 255, 0) 98.62%), #838383;
+  background: linear-gradient(135deg, #1a1919 0.6%, rgba(255, 255, 255, 0) 98.62%), #838383;
 }
 
 .conteudo {
@@ -12,7 +12,8 @@
   padding-top: 100px;
   height: 100%;
   color: white;
-  margin: 0 5vw 0 5vw;
+  margin: 0 5vw 0 2vw;
+  justify-content: space-between;
 }
 
 .conteudo-descricao {
@@ -20,14 +21,10 @@
   flex-direction: column;
   height: 100%;
   width: 50%;
-  margin-right: auto;
 }
 
 
 .conteudo-logo {
-  margin-top: auto;
-  margin-bottom: auto;
-  margin-left: auto;
   max-width: 50vw;
   max-height: 80vh;
 }
@@ -36,22 +33,34 @@
   display: block;
   font-style: normal;
   font-weight: normal;
-  font-size: 48px;
+  font-size: 4.5rem;
   line-height: 64px;
   padding-top: 50px;
 
 }
 
 .descricao-grupo {
-  font-size: 22px;
+  font-size: 1.5rem;
   line-height: 29px;
-  padding-top: 5vh;
+  padding-top: 8vh;
 }
 
 .social {
   display: flex;
+  align-items: center;
+  padding-top: 8vh;
+}
+
+.social-icon {
+  width: 85px;
+  height: 85px;
+  cursor: pointer;
+  margin-right: 3vw;
+  //usei o site https://codepen.io/sosuke/pen/Pjoqqp para gerar o filter para cor que eu queria
+  //filter: invert(100%) sepia(0%) saturate(7500%) hue-rotate(49deg) brightness(99%) contrast(107%);
 }
 
 .torneios {
   margin-left: auto;
+  --border-radius:10px;
 }

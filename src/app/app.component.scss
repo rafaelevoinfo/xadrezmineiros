@@ -1,39 +1,67 @@
+.icon-home {
+  height: 2.5rem;
+  cursor: pointer;
+}
+
+.label-home:hover+input+label {
+  text-decoration: underline;
+}
+
 .menu {
   position: absolute;
   left: 0;
   top: 0;
+  padding: 1rem 1rem;
   display: flex;
   background: none;
   background-color: transparent;
   z-index: 1;
   color: white;
   width: 100%;
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
 }
 
-.login {
-  
+.menu-item {
+  display: none;
+}
+
+.menu-item+label {
+  // text-decoration: none;  
+  padding-left: 0.5rem;
+  cursor: pointer;
+}
+
+.menu-item:checked+label {
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+label:hover {
+  text-decoration: underline;
+}
+
+
+
+.menu-item+label:last-child {
   margin-left: auto;
 }
 
-
-span {
-  font-size: 2rem;
+.login {
+  margin-left: auto;
 }
 
-ion-icon {
-  font-size: 32px;
-  min-width: 32px;
-  padding: 2px;
+ion-button:hover ion-label {
+  text-decoration: underline;
 }
 
-ion-tab-button {
-  max-width: none !important;
+ion-button:hover {
+  --ripple-color: transparent;
 }
 
-.tab-selected {
-  span {
-    font-size: 2.2rem;
-  }
-}
-
-
+// ion-button {
+//   --background-hover:red;
+//   --color-hover:red;
+//   --color:yellow;
+// }

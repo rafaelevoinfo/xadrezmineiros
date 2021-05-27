@@ -3,21 +3,23 @@
     <div class="conteudo">
       <div class="conteudo-descricao">
         <span class="titulo">Junte-se a nós e evolua !</span>
-        <span class="descricao-grupo">XadrezMineiros é um grupo de pessoas de Mineiros-GO apaixonadas pelo jogo de xadrez que se reuniram em prol da evolução mútua e disseminação do esporte.</span>
+        <span class="descricao-grupo">XadrezMineiros é um grupo de pessoas de Mineiros-GO apaixonadas pelo jogo de
+          xadrez que se reuniram em prol da evolução mútua e disseminação do esporte.</span>
         <div class='social'>
-          <ion-button (click)="onClick()">
-            <ion-icon slot="icon-only" name="add"></ion-icon>
-          </ion-button>
-          <ion-button (click)="onClick()">
-            <ion-icon slot="icon-only" name="add"></ion-icon>
-          </ion-button>
+          <a href="https://wa.me/5564999117835?text=Olá, tenho interesse em saber mais sobre o grupo XadrezMineiros!" target="_blank">
+            <img src="assets/icon/whatsapp.svg" alt="" class="social-icon"></a>
+          <a href="https://www.facebook.com/XadrezMineiros-101407585326095" target="_blank">
+            <img src="assets/icon/facebook.svg" alt="" class="social-icon"></a>
+          <a href="https://www.instagram.com/xadrezmineiros" target="_blank">
+            <img src="assets/icon/instagram.svg" alt="" class="social-icon"> </a>
 
-          <ion-button class="torneios">
-            <ion-icon slot="icon-only" name="add"></ion-icon>
+          <ion-button class="torneios" color="light" size="large" shape="round" routerLink="/torneios" routerDirection="forward">
+            <ion-icon slot="icon-only" src="assets/icon/torneio.svg"></ion-icon>
+            <ion-label>Torneios</ion-label>
           </ion-button>
         </div>
       </div>
-      <img class="conteudo-logo" src="assets/logo_linhas.png">      
+      <img class="conteudo-logo" src="assets/logo_linhas.png">
     </div>
   </div>
 

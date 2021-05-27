@@ -1,18 +1,14 @@
 <ion-app>
   <header>
     <div class="menu">
-   
-      <ion-button (click)="onClick()">
-        <ion-icon slot="start" src="assets/icon/home.svg"></ion-icon>
-        XadrezMineiros
-      </ion-button>
+      <label for="inicio" class="label-home"><img src="assets/icon/home.svg" class="icon-home" alt=""></label>
+      <input type="radio" data-link="home" checked=true name="menu" class="menu-item" id="inicio" (click)="radioChanged($event)"> <label
+        for="inicio">XadrezMineiros</label>
+      <input type="radio" data-link="torneios" name="menu" class="menu-item" id="torneio" (click)="radioChanged($event)"><label
+        for="torneio">Torneios</label>
+      <input type="radio" data-link="login" name="menu" class="menu-item" id="login" (click)="radioChanged($event)"><label
+        for="login">Login</label>
 
-      <ion-button (click)="onClick()">
-        Torneios
-      </ion-button>
-      <ion-button class="login">
-        Login
-      </ion-button>
     </div>
   </header>
 
