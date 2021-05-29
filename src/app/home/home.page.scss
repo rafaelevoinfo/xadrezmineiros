@@ -1,15 +1,17 @@
+
 .principal {
   position: absolute;
   left: 0;
   top: 0;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
   background: linear-gradient(135deg, #1a1919 0.6%, rgba(255, 255, 255, 0) 98.62%), #838383;
 }
 
+
 .conteudo {
   display: flex;
-  padding-top: 100px;
+  padding-top: 3.6rem;
   height: 100%;
   color: white;
   margin: 0 5vw 0 2vw;
@@ -21,6 +23,45 @@
   flex-direction: column;
   height: 100%;
   width: 50%;
+}
+
+@media screen and (max-width:1000px) {
+  .conteudo {
+    flex-direction: column-reverse !important;
+  }
+
+  .conteudo-descricao {    
+    width: 100% !important;
+  }
+
+  .conteudo-logo {
+    align-self: center;
+    max-width: 95vw !important;
+    height: 50vh;
+  }
+
+  .social-icon {
+    width: 55px !important;
+    height: 55px !important;;    
+  }
+
+  .titulo {    
+    font-size: 3.5rem !important;;
+    padding-top: 10px !important;
+    line-height: 32px !important;;
+  }
+
+  .descricao-grupo {
+    font-size: 1rem !important;;
+    line-height: 15px !important;;
+    padding-top: 4vh !important;;
+  }
+
+  .torneios {
+    height: 2.2em !important;
+    font-size: 15px !important;
+    --border-radius: 5px;
+  }
 }
 
 
@@ -62,5 +103,5 @@
 
 .torneios {
   margin-left: auto;
-  --border-radius:10px;
+  --border-radius: 10px;
 }
