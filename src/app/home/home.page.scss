@@ -1,17 +1,10 @@
 
-.principal {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100vw;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #1a1919 0.6%, rgba(255, 255, 255, 0) 98.62%), #838383;
+ion-content{
+  --background:transparent;
 }
 
-
 .conteudo {
-  display: flex;
-  padding-top: 3.6rem;
+  display: flex;  
   height: 100%;
   color: white;
   margin: 0 5vw 0 2vw;

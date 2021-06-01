@@ -1,3 +1,14 @@
+.principal {
+  width: 100vw;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1919 0.6%, rgba(255, 255, 255, 0) 98.62%), #838383;
+}
+
+ion-content{
+  --background:transparent;
+}
+
+
 .icon-home {
   height: 2.5rem;
   cursor: pointer;
@@ -52,6 +63,12 @@ label:hover {
 
 .login {
   margin-left: auto;
+}
+
+.conteudo{
+  position: absolute;
+  left: 0;
+  top: 3.5rem;
 }
 
 // ion-button {

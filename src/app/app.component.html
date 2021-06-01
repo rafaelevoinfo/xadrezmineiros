@@ -1,20 +1,21 @@
 <ion-app>
-  <!-- <ion-header class="menu ion-no-border"> -->
-  <header class="menu" #header>
-    <!-- <div class="menu"> -->
-    <label for="inicio" class="label-home"><img src="assets/icon/home.svg" class="icon-home" alt=""></label>
-    <input type="radio" data-link="home" checked=true name="menu" class="menu-item" id="inicio"
-      (click)="radioChanged($event)"> <label for="inicio">XadrezMineiros</label>
-    <input type="radio" data-link="torneios" name="menu" class="menu-item" id="torneio"
-      (click)="radioChanged($event)"><label for="torneio">Torneios</label>
-    <input type="radio" data-link="login" name="menu" class="menu-item" id="login" (click)="radioChanged($event)"><label
-      for="login">Login</label>
+  <div class="principal">
+    <!-- <ion-header class="menu ion-no-border"> -->
+    <header class="menu" #header>
+      <!-- <div class="menu"> -->
+      <label for="inicio" class="label-home"><img src="assets/icon/home.svg" class="icon-home" alt=""></label>
+      <input type="radio" data-link="home" checked=true name="menu" class="menu-item" id="inicio"
+        (click)="radioChanged($event)"> <label for="inicio">XadrezMineiros</label>
+      <input type="radio" data-link="torneios" name="menu" class="menu-item" id="torneio"
+        (click)="radioChanged($event)"><label for="torneio">Torneios</label>
+      <input type="radio" data-link="login" name="menu" class="menu-item" id="login"
+        (click)="radioChanged($event)"><label for="login">Login</label>
 
-    <!-- </div> -->
-  </header>
-  <!-- </ion-header> -->
-  <ion-content [scrollEvents]="true" (ionScroll)="onScrolling($event)">
-    <ion-router-outlet></ion-router-outlet>
-  </ion-content>
-
+      <!-- </div> -->
+    </header>
+    <!-- </ion-header> -->
+    <ion-content [scrollEvents]="true" (ionScroll)="onScrolling($event)" class="conteudo">
+      <ion-router-outlet></ion-router-outlet>
+    </ion-content>
+  </div>
 </ion-app>
