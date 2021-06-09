@@ -1,11 +1,33 @@
-ion-checkbox {
-  margin-right: 5px;
+ion-content{
+  --background:transparent;
 }
 
-ion-button {
-  margin: 1rem;
+.imagem {
+  margin-top: 2rem;
 }
 
-ion-list {
-  background-color: var(--ion-color-dark);
+.centro{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
+
+.linha {
+  background-color: black;
+  max-width: 33%;
+  height: 2px;
+  opacity: 1 !important;
+}
+
+
+// ion-checkbox {
+//   margin-right: 5px;
+// }
+
+// ion-button {
+//   margin: 1rem;
+// }
+
+// ion-list {
+//   background-color: var(--ion-color-dark);
+// }

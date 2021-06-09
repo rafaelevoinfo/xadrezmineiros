@@ -1,5 +1,22 @@
-<ion-content color="dark">
-  <ion-item lines="none" color="dark">
+<ion-content [scrollEvents]="true" >
+  <img src="assets/torneios.svg" alt="" class="centro imagem">
+  <hr class="centro linha"/>
+
+  <div style="display: flex;">
+    <app-card titulo="Maio/2021" valor_maximo=6 valor_atual=3 restricao="Público" [data]=data ritmo="Ritmo 10+3"></app-card>
+    ABC
+    <app-card titulo="Maio/2021" valor_maximo=6 valor_atual=2 restricao="Público" [data]=data ritmo="Ritmo 10+3"></app-card>
+  
+  </div>
+<!-- 
+  <div style="width: 50px;">
+  <round-progress [current]="current" [max]="max" [stroke]="stroke" [radius]="radius" [semicircle]="semicircle" [rounded]="rounded"
+  [responsive]="responsive" [clockwise]="clockwise" [color]="gradient ? 'url(#gradient)' : color" [background]="background"
+  [duration]="duration" [animation]="animation" [animationDelay]="animationDelay" label="2/6">
+  
+ </round-progress> 
+</div> -->
+  <!-- <ion-item lines="none" color="dark">
     <ion-checkbox (ionChange)="buscarTorneios()"></ion-checkbox>Exibir torneios anteriores
   </ion-item>
   <ion-button *ngIf="authService.isLogado" expand="block" (click)="criarTorneio()">Criar novo torneio </ion-button>
@@ -11,5 +28,5 @@
       </ion-label>
       <ion-note slot="end" color="light">{{vaTorneio.getDescricaoStatus()}}</ion-note>
     </ion-item>
-  </ion-list>
+  </ion-list> -->
 </ion-content>

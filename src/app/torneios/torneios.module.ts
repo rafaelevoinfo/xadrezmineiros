@@ -7,6 +7,8 @@ import { IonicModule } from '@ionic/angular';
 import { TorneiosPageRoutingModule } from './torneios-routing.module';
 
 import { TorneiosPage } from './torneios.page';
+import { CardComponent } from '../components/card/card.component';
+// import { RoundProgressModule } from 'angular-svg-round-progressbar';
 
 @NgModule({
   imports: [
@@ -14,7 +16,8 @@ import { TorneiosPage } from './torneios.page';
     FormsModule,
     IonicModule,
     TorneiosPageRoutingModule
+    // ,RoundProgressModule    
   ],
-  declarations: [TorneiosPage]
+  declarations: [TorneiosPage, CardComponent]  
 })
 export class TorneiosPageModule {}

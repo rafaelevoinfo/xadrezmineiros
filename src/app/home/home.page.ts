@@ -17,4 +17,8 @@ export class HomePage implements OnInit {
     //this.router.navigateByUrl('torneios');
   }
 
+  ionViewDidEnter(){
+    //console.log('ViewDidEnter HOME');    
+  }
+
 }

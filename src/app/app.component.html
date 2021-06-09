@@ -4,18 +4,19 @@
     <header class="menu" #header>
       <!-- <div class="menu"> -->
       <label for="inicio" class="label-home"><img src="assets/icon/home.svg" class="icon-home" alt=""></label>
-      <input type="radio" data-link="home" checked=true name="menu" class="menu-item" id="inicio"
+      <input type="radio" data-link="home" [checked]="indexChecked==0" name="menu" class="menu-item" id="inicio"
         (click)="radioChanged($event)"> <label for="inicio">XadrezMineiros</label>
-      <input type="radio" data-link="torneios" name="menu" class="menu-item" id="torneio"
+      <input type="radio" data-link="torneios" [checked]="indexChecked==1" name="menu" class="menu-item" id="torneio"
         (click)="radioChanged($event)"><label for="torneio">Torneios</label>
-      <input type="radio" data-link="login" name="menu" class="menu-item" id="login"
+      <input type="radio" data-link="login" [checked]="indexChecked==2" name="menu" class="menu-item" id="login"
         (click)="radioChanged($event)"><label for="login">Login</label>
 
       <!-- </div> -->
     </header>
     <!-- </ion-header> -->
     <ion-content [scrollEvents]="true" (ionScroll)="onScrolling($event)" class="conteudo">
-      <ion-router-outlet></ion-router-outlet>
+      <!--TODO: Achar um jeito melhor para fazer a animação funcionar corretamente-->
+      <ion-router-outlet animated="false"></ion-router-outlet>
     </ion-content>
   </div>
 </ion-app>
