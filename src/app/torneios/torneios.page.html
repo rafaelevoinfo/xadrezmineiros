@@ -2,11 +2,10 @@
   <img src="assets/torneios.svg" alt="" class="centro imagem">
   <hr class="centro linha"/>
 
-  <div style="display: flex;">
-    <app-card titulo="Maio/2021" valor_maximo=6 valor_atual=3 restricao="Público" [data]=data ritmo="Ritmo 10+3"></app-card>
-    ABC
-    <app-card titulo="Maio/2021" valor_maximo=6 valor_atual=2 restricao="Público" [data]=data ritmo="Ritmo 10+3"></app-card>
-  
+  <div class="cards-torneio">
+
+    <app-card class="card-torneio" *ngFor="let vaTorneio of torneios" [torneio]="vaTorneio" (click)="abrirTorneio(vaTorneio)"></app-card>
+    
   </div>
 <!-- 
   <div style="width: 50px;">

@@ -1,5 +1,6 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import * as ProgressBar from "progressbar.js";
+import { Torneio } from 'src/app/Models/types';
 
 @Component({
   selector: 'app-card',
@@ -8,14 +9,10 @@ import * as ProgressBar from "progressbar.js";
 })
 export class CardComponent implements OnInit {
 
-  @Input() titulo: string;
-  @Input() restricao: string;
-  @Input() ritmo: string;
-  @Input() data: Date;
-  @Input() valor_atual: number;
-  @Input() valor_maximo: number;
+  @Input() torneio:Torneio;
 
   @ViewChild('grafico') grafico;
+
 
   constructor() { }
 
@@ -24,7 +21,7 @@ export class CardComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    this.desenharGrafico(this.valor_atual, this.valor_maximo);
+    this.desenharGrafico(this.torneio.rodada_atual, this.torneio.qtde_rodadas);
   }
 
   desenharGrafico(ipValorAtual:number, ipValorMaximo:number) {

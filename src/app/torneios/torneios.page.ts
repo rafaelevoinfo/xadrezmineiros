@@ -40,8 +40,7 @@ export class TorneiosPage implements OnInit {
 
   constructor(
     public authService: AuthService,
-    private torneioService: TorneioService,
-    private navCtrl: NavController,
+    private torneioService: TorneioService,  
     private router:Router) {
 this.data = new Date();
   }
@@ -59,11 +58,12 @@ this.data = new Date();
   }
 
   async buscarTorneios() {
-   // this.torneios = await this.torneioService.buscarTorneios(!this.chkTorneioFinalizados.checked);
+    this.torneios = await this.torneioService.buscarTorneios(false);
   }
 
   abrirTorneio(ipTorneio: Torneio) {
     //this.navCtrl.navigateForward(`/torneio/${ipTorneio.id}`);
+    this.router.navigateByUrl(`/torneio/${ipTorneio.id}`);
   }
 
   criarTorneio() {

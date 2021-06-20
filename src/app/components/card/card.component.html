@@ -1,15 +1,20 @@
 <div class="arredondado">
   <div class="titulo">
-    <span class="texto-titulo">{{titulo}}</span>
+    <span class="texto-titulo">{{torneio?.nome}}</span>
   </div>
   <div class="conteudo">
-    <span class="texto-restricao">{{restricao}}</span>
-    <div class="linha-conteudo">      
+    <span class="texto-restricao">{{torneio?.descricao_tipo_acesso}}</span>
+    <div class="linha-conteudo">
       <div class="grafico" #grafico>
       </div>
-      <div class="info">
-        <span>{{ritmo}}</span>
-        <span>{{data |date:"dd/MM/y"}}</span>
+      <div *ngIf="(torneio?.status!=2)" class="info">
+        <span>{{torneio?.ritmo}}</span>
+        <span>{{torneio?.data_inicio |date:"dd/MM/y"}}</span>
+      </div>
+      <div *ngIf="((torneio?.status==2) && (torneio?.ganhadores))" class="ganhadores">
+        <span>1º - {{torneio?.ganhadores[0]}}</span>
+        <span>2º - {{torneio?.ganhadores[1]}}</span>
+        <span>3º - {{torneio?.ganhadores[2]}}</span>
       </div>
     </div>
   </div>

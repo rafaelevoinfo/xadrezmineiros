@@ -32,6 +32,9 @@ export class Torneio {
     rodada_atual: number;
     ritmo_minutos: number;
     ritmo_incremento: number;
+    tipo_acesso:number;
+
+    ganhadores:Jogador[];
 
     constructor() {
         this.jogadores = [];
@@ -53,6 +56,14 @@ export class Torneio {
             }
         } else {
             return '';
+        }
+    }
+
+    get descricao_tipo_acesso():string{
+        if (this.tipo_acesso == 0){
+            return 'Aberto ao público'
+        }else{
+            return 'Somente convidados';
         }
     }
 
