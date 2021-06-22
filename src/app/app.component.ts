@@ -12,16 +12,24 @@ export class AppComponent implements OnInit {
   @ViewChild('header', { read: ElementRef }) header: ElementRef;
 
   indexChecked: number = -1;
-  pages = ['home', 'torneios', 'login'];
+  pages = ['home', 'torneios', 'login', 'torneio'];
 
   constructor(private auth: AngularFireAuth, private router: Router, private activeRouter: ActivatedRoute) {
     this.auth.signInWithEmailAndPassword("anonimo@gmail.com", '123456');
   }
 
-  ngOnInit() {    
+  ngOnInit() {
     this.router.events.subscribe(e => {
       if (e instanceof NavigationEnd) {
-        let vaPath = e.url.replace('/','');
+        let vaPaths = e.url.split('/');
+        let vaPath = '';
+        if (vaPaths.length > 2){
+          vaPath = vaPaths[vaPaths.length-2]
+        }else{
+          vaPath = vaPaths[1];
+        }
+        
+        vaPath = vaPath.replace('/', '');   
         this.updateCheckedIndex(vaPath);
       }
     })
@@ -33,10 +41,17 @@ export class AppComponent implements OnInit {
 
   updateCheckedIndex(ipPath: string) {
     let vaIndex = this.pages.indexOf(ipPath);
-    if (vaIndex > 0)
-      this.indexChecked = vaIndex
+    if (vaIndex > 0) {
+      switch (vaIndex) {
+        case 0:
+        case 1:
+        case 2: { this.indexChecked = vaIndex; break; }
+        case 3: { this.indexChecked = 1; break; }
+        default: this.indexChecked = 0;
+      }
+    }
     else
-      this.indexChecked = 0;
+      this.indexChecked = 0;    
   }
 
   onScrolling(event) {
@@ -46,7 +61,7 @@ export class AppComponent implements OnInit {
     }
   }
 
-  radioChanged(event) {    
+  radioChanged(event) {
     if ((event) && (event.target)) {
       let vaLink = event.target.getAttribute('data-link');
       if (vaLink) {

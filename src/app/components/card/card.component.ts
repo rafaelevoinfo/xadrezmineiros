@@ -39,10 +39,10 @@ export class CardComponent implements OnInit {
         let vaValorEscalaNormal = Math.round(circle.value()*ipValorMaximo);
         circle.setText(`${vaValorEscalaNormal}/${ipValorMaximo}`);
 
-        let vaValorAtualEscala100 = Math.round(circle.value()*100);                     
+        let vaValorEscala100 = Math.round(circle.value()*100);                     
         //preciso converter ipValorAtual para uma escala de 0 a 100 onde 100 = ipValorMaximo
         let vaValorAtualConvertidoEscala100 = Math.round(100*ipValorAtual/ipValorMaximo);
-        if (vaValorAtualEscala100 >= vaValorAtualConvertidoEscala100) {
+        if (vaValorEscala100 >= vaValorAtualConvertidoEscala100) {
           circle.stop();
         }
       }

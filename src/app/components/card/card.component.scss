@@ -1,8 +1,8 @@
 .arredondado {
   border: 2px solid black;
-  border-radius: 20px;
-  height: 175px;
-  width: 268px;
+  border-radius: 1.25rem;
+  height: 10.93rem;
+  width: 16.75rem;
   background-color: white;
   background-clip: padding-box;
   cursor: pointer;
@@ -13,33 +13,36 @@
   left: -2px;
   top: -2px;
   display: flex;
-  align-items: center;  
+  align-items: center;
 
-  width: 267px;
-  height: 58px;    
+  width: 16.68rem;
+  height: 3.6rem;
   background: black;
   border-radius: 20px 20px 0px 0px;
-  
+
   padding-left: 10px;
 }
 
 .texto-titulo {
-    color: white;
-    font-size: 1.5rem;
+  color: white;
+  font-size: 1.5rem;
+  overflow: hidden;
+  white-space: nowrap;  
+  text-overflow: ellipsis;
 }
 
 .conteudo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.texto-restricao {    
-    color: black;
-    font-size: 1rem;      
+.texto-restricao {
+  color: black;
+  font-size: 1rem;
 }
 
-.linha-conteudo{
+.linha-conteudo {
   display: flex;
   width: 100%;
   justify-content: space-between;
@@ -47,6 +50,7 @@
 
 .grafico {
   max-width: 35%;
+  max-height: 5rem;
   //top right bottom left
   padding: 5px 5px 10px 10px;
   margin: 0;
@@ -66,15 +70,21 @@
   background-color: black;
   color: white;
   margin-right: 5px;
-  border-radius: 20px;
+  border-radius: 1.25rem;
   display: flex;
   flex-direction: column;
-  max-height: 85px;
+  max-height: 5rem;
   width: 65%;
 }
 
+.ganhadores span {
+  overflow: hidden;
+  white-space: nowrap;  
+  text-overflow: ellipsis;
+}
 
-.info span{
+
+.info span {
   margin-right: 5px;
 }
 
@@ -83,5 +93,5 @@
 }
 
 .info span:nth-child(2) {
-  font-size: 2rem;  
+  font-size: 2rem;
 }

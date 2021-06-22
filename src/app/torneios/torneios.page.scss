@@ -1,12 +1,12 @@
-ion-content{
-  --background:transparent;
+ion-content {
+  --background: transparent;
 }
 
 .imagem {
   margin-top: 2rem;
 }
 
-.centro{
+.centro {
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -20,12 +20,22 @@ ion-content{
 }
 
 .cards-torneio {
-  display: flex; 
+  display: flex;
+  flex-wrap: wrap;
 
 }
 
 .card-torneio {
   margin: 5px;
+  
+  transition: transform .2s linear, z-index .2s linear;    
+  transform: scale(1.0); 
+  z-index: 1; 
+}
+
+.card-torneio:hover {
+  transform: scale(1.1);
+  z-index: 100; 
 }
 
 
