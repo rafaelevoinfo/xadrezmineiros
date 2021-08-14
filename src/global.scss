@@ -29,8 +29,16 @@ app-tab-item {
   flex-grow: 1;
 }
 
+.invisivel {
+  display: none;
+}
+
 ion-content{
   font-family: Segoe UI, Roboto, sans-serif;
+}
+
+.conteudo-router{
+  margin-bottom: 3.5rem !important;
 }
 
 @media screen and (max-width: 1000px) {
@@ -49,4 +57,8 @@ ion-content{
   html {
     font-size: 8px;
   }
+}
+
+.invisivel {
+  display: none;
 }

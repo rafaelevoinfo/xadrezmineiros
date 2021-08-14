@@ -62,12 +62,13 @@ this.data = new Date();
   }
 
   abrirTorneio(ipTorneio: Torneio) {
+    console.log(ipTorneio.id)
     //this.navCtrl.navigateForward(`/torneio/${ipTorneio.id}`);
     this.router.navigateByUrl(`/torneio/${ipTorneio.id}`);
   }
 
   criarTorneio() {
-   // this.navCtrl.navigateForward('/torneio');
+    this.router.navigateByUrl('/torneio');
   }
 
 }

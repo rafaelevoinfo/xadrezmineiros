@@ -30,9 +30,9 @@ export class TorneioPage implements OnInit {
     this.torneioForm = this.fb.group({
       nome: ['', [Validators.required]],
       qtde_rodadas: ['', [Validators.required]],
-      ritmo_minutos: [10, [Validators.required]],
-      ritmo_incremento: [3, [Validators.required]],
-      data_inicio: ['', [Validators.required]]
+      ritmo: [10, [Validators.required]],      
+      data_inicio: ['', [Validators.required]],
+      descricao:['',[]]
     });
 
     this.jogadorForm = this.fb.group({
@@ -44,6 +44,11 @@ export class TorneioPage implements OnInit {
     this.carregarTorneio(this.route.snapshot.params.id);
   }
 
+  isIniciado():boolean{
+    return this.torneio?.status >= 1;
+    return false;
+  }
+
   async carregarTorneio(ipId: string) {
     if (ipId) {
       this.torneio = await this.torneioService.buscarTorneio(ipId);
@@ -52,9 +57,9 @@ export class TorneioPage implements OnInit {
         this.torneioForm.patchValue({
           nome: this.torneio.nome,
           qtde_rodadas: this.torneio.qtde_rodadas,
-          ritmo_minutos: this.torneio.ritmo_minutos,
-          ritmo_incremento: this.torneio.ritmo_incremento,
-          data_inicio: this.torneio.data_inicio.toISOString()
+          ritmo: this.torneio.ritmo,        
+          data_inicio: this.torneio.data_inicio.toISOString(),
+          descricao: this.torneio.descricao
         });
 
         if (this.torneio.status == 1) {
@@ -76,20 +81,28 @@ export class TorneioPage implements OnInit {
     }
   }
 
-  salvar() {
+ async salvarTorneio(){
+    await this.salvar();
+    this.overlayService.toast({
+      message:"Salvo com sucesso!",
+      color:"success"
+    })
+  }
+
+  async salvar() {
     if (this.torneio.status < 0) {
       this.torneio.status = 0;
     }
     this.torneio.nome = this.torneioForm.value.nome;
     this.torneio.qtde_rodadas = this.torneioForm.value.qtde_rodadas;
-    this.torneio.ritmo_minutos = this.torneioForm.value.ritmo_minutos;
-    this.torneio.ritmo_incremento = this.torneioForm.value.ritmo_incremento;
+    this.torneio.ritmo = this.torneioForm.value.ritmo;    
+    this.torneio.descricao = this.torneioForm.value.descricao;
     this.torneio.data_inicio = new Date(Date.parse(this.torneioForm.value.data_inicio));
     if (!this.torneio.id) {
-      this.torneioService.incluirTorneio(this.torneio)
+      await this.torneioService.incluirTorneio(this.torneio)
     } else {
-      this.torneioService.atualizarTorneio(this.torneio);
-    }
+      await this.torneioService.atualizarTorneio(this.torneio);
+    }   
   }
 
   async excluir() {

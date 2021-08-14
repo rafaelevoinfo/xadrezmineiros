@@ -30,9 +30,9 @@ export class Torneio {
     jogadores: Jogador[];
     rodadas: Rodada[];
     rodada_atual: number;
-    ritmo_minutos: number;
-    ritmo_incremento: number;
+    ritmo: string;
     tipo_acesso:number;
+    descricao:string;
 
     ganhadores:Jogador[];
 
@@ -45,18 +45,6 @@ export class Torneio {
 
     get finalizado(): boolean {
         return this.status == 2;
-    }
-
-    get ritmo(): string {
-        if (this.ritmo_minutos) {
-            if (this.ritmo_incremento) {
-                return this.ritmo_minutos.toString() + '+' + this.ritmo_incremento.toString()
-            } else {
-                return this.ritmo_minutos.toString() + '+0'
-            }
-        } else {
-            return '';
-        }
     }
 
     get descricao_tipo_acesso():string{

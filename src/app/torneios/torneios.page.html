@@ -1,13 +1,22 @@
-<ion-content [scrollEvents]="true" >
-  <img src="assets/torneios.svg" alt="" class="centro imagem">
-  <hr class="centro linha"/>
+<ion-content [scrollEvents]="true">
+  <div class="conteudo-router">
+    <img src="assets/torneios.svg" alt="" class="centro imagem">
+    <hr class="centro linha" />
 
-  <div class="cards-torneio">
-
-    <app-card class="card-torneio" *ngFor="let vaTorneio of torneios" [torneio]="vaTorneio" (click)="abrirTorneio(vaTorneio)"></app-card>
+    <div>
+      <ion-button class="novo-torneio" [class.invisivel]="!authService.isLogado" color="light" (click)="criarTorneio()">Criar novo torneio </ion-button>
+    </div>
     
+    <div class="cards-torneio">
+
+      <app-card class="card-torneio" *ngFor="let vaTorneio of torneios" [torneio]="vaTorneio"
+        (click)="abrirTorneio(vaTorneio)"></app-card>
+
+    </div>
+   
   </div>
-<!-- 
+
+  <!-- 
   <div style="width: 50px;">
   <round-progress [current]="current" [max]="max" [stroke]="stroke" [radius]="radius" [semicircle]="semicircle" [rounded]="rounded"
   [responsive]="responsive" [clockwise]="clockwise" [color]="gradient ? 'url(#gradient)' : color" [background]="background"

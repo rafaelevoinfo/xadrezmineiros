@@ -1,32 +1,127 @@
-.rodada {
-  color: white;
-  text-decoration: underline;
-  padding-left: 5px;
-}
-
-
-.conteudo-ativo,
-.conteudo-ativo * {
-  background-color: gray;
-  color: white;
-}
-
-.partida,
-.partida>a {
-  text-align: center;
-  text-decoration: none;
-  font-size: .8rem;
-}
-
 ion-content {
-  --padding-start: 10px;
-  --padding-end: 10px;
+  --background: transparent;
 }
 
-ion-list {
-  background-color: gray;
+ion-datetime {
+  padding-top: 10px;
+  height: 40px;
 }
 
-ion-item {
-  --background: gray;
+.add-jogador {
+  --border-radius:10px;
 }
+
+.conteudo {
+  width: 80%;
+  margin: auto;
+  max-width: 1000px;
+  color: white;  
+}
+
+.nome {
+  grid-area: nome;
+}
+
+.data {
+  grid-area: data;
+}
+
+.ritmo {
+  grid-area: ritmo;
+}
+
+.qtde-rodadas {
+  grid-area: rodadas;
+}
+
+.descricao {
+  grid-area: descricao;
+}
+
+.dados-gerais {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  grid-template-areas:
+    "nome data ritmo rodadas"
+    "descricao descricao descricao descricao";
+}
+
+@media(max-width: 1000px) {
+  .dados-gerais {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-areas:
+      "nome nome nome data"
+      "ritmo ritmo rodadas rodadas"
+      "descricao descricao descricao descricao";
+  }
+}
+
+@media(max-width: 600px) {
+  .dados-gerais {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "nome"
+      "data"
+      "ritmo"
+      "rodadas"
+      "descricao";
+  }
+}
+
+
+.titulo-group {
+  display: inline-block;
+  width: 100%;
+  font-size: 1.5rem;
+  font-weight: bold;  
+  margin-bottom: 5px;
+  margin-top: 5px;
+}
+
+.rodadas, .jogadores{
+  padding: 0px 0px 0px 10px;
+  border-left: 2px solid white;
+}
+
+.titulo-rodada{
+  text-decoration: underline;
+}
+
+.partidas, .lista-jogadores {
+  background-color: transparent;
+}
+
+.partida, .jogador {
+  --background: transparent;
+}
+
+a {
+  text-decoration:none;
+  color:white;
+}
+
+a:visited {
+  color:white;
+} 
+a:hover {
+  color: gray;
+}
+
+.botoes {
+  display: flex;
+}
+
+.btn-alinhado-direita{
+ margin-left: auto;
+}
+
+.btn-alinhado-esquerda{
+  margin-right: auto;
+}
+
+
+
+
+
+
