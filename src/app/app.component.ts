@@ -15,7 +15,7 @@ export class AppComponent implements OnInit {
   indexChecked: number = -1;
   pages = ['home', 'torneios', 'login', 'torneio'];
 
-  constructor(private auth: AngularFireAuth, private authService: AuthService, private router: Router, private activeRouter: ActivatedRoute) {
+  constructor(private auth: AngularFireAuth, public authService: AuthService, private router: Router, private activeRouter: ActivatedRoute) {
 
   }
 
@@ -78,8 +78,7 @@ export class AppComponent implements OnInit {
 
   }
 
-  logout() {
-    console.log('Saindo');
+  logout() {    
     this.auth.signOut().then(() => {
       this.router.navigateByUrl("/home");
     });

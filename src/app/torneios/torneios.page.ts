@@ -61,8 +61,7 @@ this.data = new Date();
     this.torneios = await this.torneioService.buscarTorneios(false);
   }
 
-  abrirTorneio(ipTorneio: Torneio) {
-    console.log(ipTorneio.id)
+  abrirTorneio(ipTorneio: Torneio) {    
     //this.navCtrl.navigateForward(`/torneio/${ipTorneio.id}`);
     this.router.navigateByUrl(`/torneio/${ipTorneio.id}`);
   }
