@@ -16,7 +16,7 @@ export class AuthService {
   constructor(private auth: AngularFireAuth) {
     this.auth.authState.subscribe(user =>{
       this._isLogado = user && (user.uid != '');
-      console.log(user);
+     // console.log(user);
     });      
   }  
 
