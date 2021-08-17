@@ -27,21 +27,7 @@ export class LoginPage implements OnInit {
     return !environment.production
   }
 
-  loginFixo() {
-    this.auth.signInWithEmailAndPassword(environment.login.email, environment.login.senha)
-      .then(user => {
-        this.navCtrl.navigateRoot('/torneios');
-      })
-      .catch(e => {
-        console.log('Erro', e);
-        this.overlay.toast({
-          message: 'Login/senha incorretos',
-          color: "warning"
-        })
-      });
-  }
-
-  login(ipEmail: IonInput, ipSenha: IonInput) {
+  login(ipEmail: IonInput, ipSenha: IonInput) {        
     this.auth.signInWithEmailAndPassword(ipEmail.value.toString(), ipSenha.value.toString())
       .then(user => {
         this.navCtrl.navigateRoot('/torneios');
@@ -60,7 +46,7 @@ export class LoginPage implements OnInit {
 
   logout() {
     this.auth.signOut().then(() => {
-      this.auth.signInWithEmailAndPassword("anonimo@gmail.com", '123456');
+      //this.auth.signInWithEmailAndPassword("anonimo@gmail.com", '123456');
     });
   }
 }

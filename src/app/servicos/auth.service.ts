@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireAuth} from '@angular/fire/auth';
 import firebase from 'firebase/app';
+import {Storage} from '@capacitor/storage'
+
 
 
 @Injectable({
@@ -12,19 +14,18 @@ export class AuthService {
   private _user: firebase.User;
 
   constructor(private auth: AngularFireAuth) {
-    this.auth.user.subscribe({
-      next: (user) => {
-        this._user = user;
-        this._isLogado = user?.email != 'anonimo@gmail.com';
-      }
-    });
-  }
+    this.auth.authState.subscribe(user =>{
+      this._isLogado = user && (user.uid != '');
+      console.log(user);
+    });      
+  }  
 
   get user() {
     return this._user;
   }
 
   get isLogado(): boolean {
-    return this._isLogado;
+    return !this._isLogado ? false : this._isLogado;
   }
+
 }

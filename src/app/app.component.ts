@@ -1,6 +1,7 @@
 import { Component, ContentChild, ContentChildren, ElementRef, OnInit, QueryList, ViewChild } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { AuthService } from './servicos/auth.service';
 // import {Router} from '@angular/core/r';
 
 @Component({
@@ -14,8 +15,8 @@ export class AppComponent implements OnInit {
   indexChecked: number = -1;
   pages = ['home', 'torneios', 'login', 'torneio'];
 
-  constructor(private auth: AngularFireAuth, private router: Router, private activeRouter: ActivatedRoute) {
-    this.auth.signInWithEmailAndPassword("anonimo@gmail.com", '123456');
+  constructor(private auth: AngularFireAuth, private authService: AuthService, private router: Router, private activeRouter: ActivatedRoute) {
+
   }
 
   ngOnInit() {
@@ -23,13 +24,13 @@ export class AppComponent implements OnInit {
       if (e instanceof NavigationEnd) {
         let vaPaths = e.url.split('/');
         let vaPath = '';
-        if (vaPaths.length > 2){
-          vaPath = vaPaths[vaPaths.length-2]
-        }else{
+        if (vaPaths.length > 2) {
+          vaPath = vaPaths[vaPaths.length - 2]
+        } else {
           vaPath = vaPaths[1];
         }
-        
-        vaPath = vaPath.replace('/', '');   
+
+        vaPath = vaPath.replace('/', '');
         this.updateCheckedIndex(vaPath);
       }
     })
@@ -51,7 +52,7 @@ export class AppComponent implements OnInit {
       }
     }
     else
-      this.indexChecked = 0;    
+      this.indexChecked = 0;
   }
 
   onScrolling(event) {
@@ -75,5 +76,12 @@ export class AppComponent implements OnInit {
 
   login() {
 
+  }
+
+  logout() {
+    console.log('Saindo');
+    this.auth.signOut().then(() => {
+      this.router.navigateByUrl("/home");
+    });
   }
 }

@@ -1,13 +1,6 @@
 <ion-content>
-  <div *ngIf="authService.isLogado; else showLogin">
-    <h1>Olá {{ authService.user?.email }}</h1>
-    <ion-button (click)="logout()">
-      <ion-icon name="walk-outline"></ion-icon>
-      <ion-label>Sair</ion-label>
-    </ion-button>
 
-  </div>
-  <ng-template #showLogin>
+  <div class="centro">
     <ion-item>
       <ion-label position="floating">E-Mail</ion-label>
       <ion-input type="email" #email></ion-input>
@@ -16,13 +9,9 @@
       <ion-label position="floating">Senha</ion-label>
       <ion-input type="password" #senha></ion-input>
     </ion-item>
-    <ion-button (click)="login(email, senha)">
+    <ion-button color="light" (click)="login(email, senha)">
       <ion-icon name="person-outline"></ion-icon>
       <ion-label>Logar</ion-label>
     </ion-button>
-    <ion-button *ngIf="debug" (click)="loginFixo()">
-      <ion-label>Logar Rafael</ion-label>
-    </ion-button>
-  </ng-template>
-
+  </div>
 </ion-content>

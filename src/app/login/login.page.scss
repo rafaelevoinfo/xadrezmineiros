@@ -1,3 +1,26 @@
 ion-label {
   margin-left: 10px;
 }
+ion-content {
+  --background: transparent;
+}
+
+ion-item{
+  --background: transparent;
+  --color: white;
+}
+
+ion-button{
+  // width: 100%;
+  margin-top: 10px;
+  margin-left: auto;
+}
+
+.centro {
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1rem;
+}
