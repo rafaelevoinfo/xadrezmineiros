@@ -1,7 +1,6 @@
 import { Component, ContentChild, ContentChildren, ElementRef, OnInit, QueryList, ViewChild } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import { AuthService } from './servicos/auth.service';
+import { XadrezMineirosApi } from './servicos/xadrezmineiros-api.service';
 // import {Router} from '@angular/core/r';
 
 @Component({
@@ -15,7 +14,7 @@ export class AppComponent implements OnInit {
   indexChecked: number = -1;
   pages = ['home', 'torneios', 'login', 'torneio'];
 
-  constructor(private auth: AngularFireAuth, public authService: AuthService, private router: Router, private activeRouter: ActivatedRoute) {
+  constructor(private serverApi:XadrezMineirosApi, private router: Router, private activeRouter: ActivatedRoute) {
 
   }
 
@@ -79,8 +78,6 @@ export class AppComponent implements OnInit {
   }
 
   logout() {    
-    this.auth.signOut().then(() => {
-      this.router.navigateByUrl("/home");
-    });
+    this.serverApi.logout();
   }
 }

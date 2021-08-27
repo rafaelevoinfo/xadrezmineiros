@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, DocumentData, DocumentReference } from '@angular/fire/firestore';
-import { AngularFireAuth } from '@angular/fire/auth';
 import { Jogador, Partida, Rodada, Torneio } from '../Models/types';
 import { Swiss, EventManager } from 'tournament-organizer';
 import { LichessApiService } from './lichess-api.service';
+import { XadrezMineirosApi } from './xadrezmineiros-api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,55 +10,11 @@ import { LichessApiService } from './lichess-api.service';
 export class TorneioService {
   torneioManager;
 
-  constructor(private firestore: AngularFirestore,
+  constructor(private serverApi:XadrezMineirosApi,
     private chessApi: LichessApiService) {
     this.torneioManager = new EventManager();
   }
 
-  async buscarTorneios(ipSomenteAtivos: boolean): Promise<Torneio[]> {
-    try {
-
-      let vaResult: Torneio[] = [];
-      let vaTorneiosRef = this.firestore.collection('torneios').ref;
-      let vaSnapshot = undefined;
-      if (ipSomenteAtivos) {
-        vaSnapshot = await vaTorneiosRef.where("status", '!=', 2).get()
-      } else {
-        vaSnapshot = await vaTorneiosRef.get();
-      }
-
-      if (vaSnapshot.empty) {
-        console.log('Nenhum torneio encontrado!');
-        return;
-      }
-
-      vaSnapshot.forEach(data => {
-        let vaTorneio = this.castDocumentDataToTorneio(data);
-        if (vaTorneio) {
-          vaResult.push(vaTorneio);
-        }
-      });
-
-      vaResult = vaResult.sort((t1, t2) => {
-        return t1.data_inicio.getTime() - t2.data_inicio.getTime()
-      })
-
-      return vaResult;
-
-    } catch (error) {
-      return [];
-    }
-  }
-
-  async buscarTorneio(ipId: string): Promise<Torneio> {
-    let vaDoc = await this.firestore.collection('torneios').ref.doc(ipId);
-    if (vaDoc) {
-      let vaData = await vaDoc.get();
-      return this.castDocumentDataToTorneio(vaData);
-    } else {
-      return null;
-    }
-  }
 
   criarTorneioSuico(ipTorneio: Torneio): Swiss {
     const vaTorneioSwiss = this.torneioManager.createTournament(null, {
@@ -101,10 +56,11 @@ export class TorneioService {
   }
 
   async iniciarTorneio(ipTorneio: Torneio): Promise<boolean> {
-    ipTorneio.status = 1;
-    this.processarRodada(ipTorneio);
+    return
+    // ipTorneio.status = 1;
+    // this.processarRodada(ipTorneio);
 
-    return await this.atualizarTorneio(ipTorneio);
+    // return await this.atualizarTorneio(ipTorneio);
   }
 
   processarRodada(ipTorneio: Torneio): Boolean {
@@ -164,22 +120,23 @@ export class TorneioService {
   }
 
   async buscarJogador(ipUsername: string): Promise<Jogador> {
-    let vaResult = await this.chessApi.buscarUsuario(ipUsername);
-    if (vaResult) {
-      let vaJogador = new Jogador();
-      vaJogador.nome = vaResult?.profile?.firstName;
-      vaJogador.rating = vaResult.perfs?.rapid?.rating;
-      vaJogador.username = ipUsername;
+    return undefined;
+    // let vaResult = await this.chessApi.buscarUsuario(ipUsername);
+    // if (vaResult) {
+    //   let vaJogador = new Jogador();
+    //   vaJogador.nome = vaResult?.profile?.firstName;
+    //   vaJogador.rating = vaResult.perfs?.rapid?.rating;
+    //   vaJogador.username = ipUsername;
 
-      if (!vaJogador.nome) {
-        vaJogador.nome = vaJogador.username
-      }
-      if (!vaJogador.rating) {
-        vaJogador.rating = 1500;
-      }
+    //   if (!vaJogador.nome) {
+    //     vaJogador.nome = vaJogador.username
+    //   }
+    //   if (!vaJogador.rating) {
+    //     vaJogador.rating = 1500;
+    //   }
 
-      return vaJogador;
-    }
+    //   return vaJogador;
+    // }
   }
 
   async buscarResultados(ipTorneio: Torneio): Promise<boolean> {
@@ -215,72 +172,9 @@ export class TorneioService {
     return false;
   }
 
-  async incluirTorneio(ipTorneio: Torneio): Promise<string> {
-    //nao se pode passar objetos customizados (criados com uso do new). Tem sempre que ser um Object
-    let vaDocument = await this.firestore.collection('torneios').ref.add(this.createObject(ipTorneio));
-    if (vaDocument) {
-      ipTorneio.id = vaDocument.id;
-    }
-    return vaDocument.id;
-  }
+  
 
-  async atualizarTorneio(ipTorneio: Torneio): Promise<boolean> {
-    let vaDocument = this.firestore.collection('torneios').ref.doc(ipTorneio.id);
-    if (vaDocument) {
-      await vaDocument.update(this.createObject(ipTorneio));
-      return true;
-    }
-  }
+  
 
-  async excluirTorneio(ipId: string): Promise<boolean> {
-    let vaDocument = this.firestore.collection('torneios').ref.doc(ipId);
-    if (vaDocument) {
-      await vaDocument.delete();
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  private createObject(ipTorneio: Torneio) {
-    let vaObj = Object.assign({}, ipTorneio);
-    vaObj.jogadores = [];
-    vaObj.rodadas = [];
-    ipTorneio.jogadores.forEach(j => {
-      vaObj.jogadores.push(Object.assign({}, j));
-    });
-
-
-    ipTorneio.rodadas.forEach(r => {
-      let vaRodada = Object.assign({}, r);
-      vaRodada.partidas = [];
-      for (const vaPartida of r.partidas) {
-        let vaJb = Object.assign({}, vaPartida.jogadorBrancas);
-        let vaJn = Object.assign({}, vaPartida.jogadorNegras);
-
-        let vaP = Object.assign({}, vaPartida);
-        vaP.jogadorBrancas = vaJb;
-        vaP.jogadorNegras = vaJn;
-
-        vaRodada.partidas.push(vaP);
-      }
-      vaObj.rodadas.push(vaRodada);
-    });
-
-    return vaObj;
-  }
-
-  castDocumentDataToTorneio(ipDocData: DocumentData): Torneio {
-    if (ipDocData) {
-      let vaData = ipDocData.data();
-      let vaTorneio: Torneio = Object.assign(new Torneio, vaData);
-      vaTorneio.id = ipDocData.id;
-      vaTorneio.data_inicio = new Date(vaData.data_inicio.seconds * 1000);
-      for (const vaRodada of vaTorneio.rodadas) {
-        let vaDataSec: any = vaRodada.data_inicio;
-        vaRodada.data_inicio = new Date(vaDataSec.seconds * 1000);
-      }
-      return vaTorneio;
-    }
-  }
+  
 }

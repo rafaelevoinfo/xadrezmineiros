@@ -1,10 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { IonCheckbox, NavController } from '@ionic/angular';
 import { Torneio } from '../Models/types';
-import { AuthService } from '../servicos/auth.service';
 import { TorneioService } from '../servicos/torneio.service';
+import { XadrezMineirosApi } from '../servicos/xadrezmineiros-api.service';
 
 @Component({
   selector: 'app-torneios',
@@ -16,7 +15,7 @@ export class TorneiosPage implements OnInit {
   @ViewChild(IonCheckbox) chkTorneioFinalizados: IonCheckbox;
 
   public torneios: Torneio[];
-  data:Date;
+  data: Date;
 
 
   // current: number = 2;
@@ -39,10 +38,9 @@ export class TorneiosPage implements OnInit {
 
 
   constructor(
-    public authService: AuthService,
-    private torneioService: TorneioService,  
-    private router:Router) {
-this.data = new Date();
+    private serverApi:XadrezMineirosApi,    
+    private router: Router) {
+    this.data = new Date();
   }
 
 
@@ -58,10 +56,10 @@ this.data = new Date();
   }
 
   async buscarTorneios() {
-    this.torneios = await this.torneioService.buscarTorneios(false);
+    this.torneios = await this.serverApi.buscarTorneios(false);
   }
 
-  abrirTorneio(ipTorneio: Torneio) {    
+  abrirTorneio(ipTorneio: Torneio) {
     //this.navCtrl.navigateForward(`/torneio/${ipTorneio.id}`);
     this.router.navigateByUrl(`/torneio/${ipTorneio.id}`);
   }

@@ -4,7 +4,7 @@
     <hr class="centro linha" />
 
     <div>
-      <ion-button class="novo-torneio" [class.invisivel]="!authService.isLogado" color="light" (click)="criarTorneio()">Criar novo torneio </ion-button>
+      <ion-button class="novo-torneio" [class.invisivel]="!serverApi.isLogado()" color="light" (click)="criarTorneio()">Criar novo torneio </ion-button>
     </div>
     
     <div class="cards-torneio">

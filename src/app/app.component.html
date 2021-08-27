@@ -9,10 +9,10 @@
       <input type="radio" data-link="torneios" [checked]="indexChecked==1" name="menu" class="menu-item" id="torneio"
         (click)="radioChanged($event)"><label for="torneio">Torneios</label>
 
-      <ion-button size="small" color="light" [class.invisivel]=!authService.isLogado (click)="logout()">Logout
+      <ion-button size="small" color="light" [class.invisivel]=!serverApi.isLogado() (click)="logout()">Logout
       </ion-button>
       <input type="radio" data-link="login" [checked]="indexChecked==2" name="menu" class="menu-item" id="login"
-        (click)="radioChanged($event)"><label [class.invisivel]=authService.isLogado for="login">Login</label>
+        (click)="radioChanged($event)"><label [class.invisivel]=serverApi.isLogado() for="login">Login</label>
 
 
       <!-- </div> -->

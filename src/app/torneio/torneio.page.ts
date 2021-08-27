@@ -3,10 +3,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { Jogador, Partida, Rodada, Torneio } from '../Models/types';
-import { AuthService } from '../servicos/auth.service';
-import { LichessApiService } from '../servicos/lichess-api.service';
 import { OverlayService } from '../servicos/overlay.service';
 import { TorneioService } from '../servicos/torneio.service';
+import { XadrezMineirosApi } from '../servicos/xadrezmineiros-api.service';
 
 @Component({
   selector: 'app-torneio',
@@ -20,11 +19,10 @@ export class TorneioPage implements OnInit {
   ganhadores: Jogador[] = [];
 
   constructor(private route: ActivatedRoute,
-    private torneioService: TorneioService,
+    private serverApi:XadrezMineirosApi,
     private fb: FormBuilder,
     private navCtrl: NavController,
-    private overlayService: OverlayService,
-    public authService: AuthService) { }
+    private overlayService: OverlayService) { }
 
   ngOnInit() {
     this.torneioForm = this.fb.group({
@@ -51,7 +49,7 @@ export class TorneioPage implements OnInit {
 
   async carregarTorneio(ipId: string) {
     if (ipId) {
-      this.torneio = await this.torneioService.buscarTorneio(ipId);
+      this.torneio = await this.serverApi.buscarTorneio(ipId);
 
       if (this.torneio) {
         this.torneioForm.patchValue({
@@ -62,17 +60,17 @@ export class TorneioPage implements OnInit {
           descricao: this.torneio.descricao
         });
 
-        if (this.torneio.status == 1) {
-          let vaAchou = await this.torneioService.buscarResultados(this.torneio);
-          let vaMudou = this.torneioService.processarRodada(this.torneio);
-          if ((vaMudou) || (vaAchou)) {
-            this.salvar();
-          }
-        }
+        // if (this.torneio.status == 1) {
+        //   let vaAchou = await this.torneioService.buscarResultados(this.torneio);
+        //   let vaMudou = this.torneioService.processarRodada(this.torneio);
+        //   if ((vaMudou) || (vaAchou)) {
+        //     this.salvar();
+        //   }
+        // }
 
-        if (this.torneio.status == 2) {
-          this.ganhadores = this.torneioService.ranking(this.torneio);
-        }
+        // if (this.torneio.status == 2) {
+        //   this.ganhadores = this.torneioService.ranking(this.torneio);
+        // }
       }
     }
 
@@ -99,9 +97,9 @@ export class TorneioPage implements OnInit {
     this.torneio.descricao = this.torneioForm.value.descricao;
     this.torneio.data_inicio = new Date(Date.parse(this.torneioForm.value.data_inicio));
     if (!this.torneio.id) {
-      await this.torneioService.incluirTorneio(this.torneio)
+      await this.serverApi.incluirTorneio(this.torneio)
     } else {
-      await this.torneioService.atualizarTorneio(this.torneio);
+      await this.serverApi.atualizarTorneio(this.torneio);
     }   
   }
 
@@ -112,7 +110,7 @@ export class TorneioPage implements OnInit {
         buttons: [{
           text: "Sim",
           handler: async () => {
-            if (await this.torneioService.excluirTorneio(this.torneio.id)) {
+            if (await this.serverApi.excluirTorneio(this.torneio.id)) {
               this.voltar();
             }
           }
@@ -123,35 +121,35 @@ export class TorneioPage implements OnInit {
   }
 
   async iniciar() {
-    if (await this.torneioService.iniciarTorneio(this.torneio)) {
-      this.voltar();
-    }
+    // if (await this.serverApi.iniciarTorneio(this.torneio)) {
+    //   this.voltar();
+    // }
   }
 
   async pegarResultado(ipRodada: Rodada, ipPartida: Partida) {
-    if (await this.torneioService.pegarResultado(this.torneio, ipRodada, ipPartida)) {
-      this.salvar();
-    } else {
-      this.overlayService.toast({
-        message: "Partida não encontrada",
-        color: 'warning'
-      })
-    }
+    // if (await this.torneioService.pegarResultado(this.torneio, ipRodada, ipPartida)) {
+    //   this.salvar();
+    // } else {
+    //   this.overlayService.toast({
+    //     message: "Partida não encontrada",
+    //     color: 'warning'
+    //   })
+    // }
   }
 
 
   async adicionarJogador() {
-    let vaJogador = await this.torneioService.buscarJogador(this.jogadorForm.value.username);
-    if (vaJogador) {
-      this.torneio.jogadores.push(vaJogador);
-      this.salvar();
-    } else {
-      this.overlayService.toast({
-        message: "Jogador não encontrado",
-        color: "warning"
-      });
-    }
-    this.jogadorForm.reset();
+    // let vaJogador = await this.torneioService.buscarJogador(this.jogadorForm.value.username);
+    // if (vaJogador) {
+    //   this.torneio.jogadores.push(vaJogador);
+    //   this.salvar();
+    // } else {
+    //   this.overlayService.toast({
+    //     message: "Jogador não encontrado",
+    //     color: "warning"
+    //   });
+    // }
+    // this.jogadorForm.reset();
   }
 
   removerJogador(ipJogador: Jogador) {
