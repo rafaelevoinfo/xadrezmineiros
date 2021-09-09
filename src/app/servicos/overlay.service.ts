@@ -37,4 +37,17 @@ export class OverlayService {
     await toast.present();
     return toast;
   }
+
+  showError(ipError){
+    this.toast({
+      message: ipError,
+      color:'warning'        
+    })
+  }
+
+  showInfoMsg(ipMsg:string){
+    this.toast({
+      message: ipMsg,        
+    })
+  }
 }

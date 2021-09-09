@@ -55,88 +55,24 @@ export class TorneioService {
     return vaTorneioSwiss;
   }
 
-  async iniciarTorneio(ipTorneio: Torneio): Promise<boolean> {
-    return
-    // ipTorneio.status = 1;
-    // this.processarRodada(ipTorneio);
 
-    // return await this.atualizarTorneio(ipTorneio);
-  }
+  async buscarJogador(ipUsername: string): Promise<Jogador> {    
+    let vaResult = await this.chessApi.buscarUsuario(ipUsername);
+    if (vaResult) {
+      let vaJogador = new Jogador();
+      vaJogador.nome = vaResult?.profile?.firstName;
+      vaJogador.rating = vaResult.perfs?.rapid?.rating;
+      vaJogador.username = ipUsername;
 
-  processarRodada(ipTorneio: Torneio): Boolean {
-    let vaResult = false;
-    let vaTorneioSwiss = this.criarTorneioSuico(ipTorneio);
-
-    //vamos pegar a proxima rodada se disponivel
-    if ((vaTorneioSwiss.currentRound >= 0) && vaTorneioSwiss.active) {
-      //se true, indica que uma nova rodada começou
-      if (ipTorneio.rodada_atual < vaTorneioSwiss.currentRound) {
-        let vaMatches = vaTorneioSwiss.activeMatches(vaTorneioSwiss.currentRound);
-
-        if ((vaMatches) && (vaMatches.length > 0)) {
-          let vaRodada = new Rodada();
-          vaRodada.data_inicio = new Date();
-          vaRodada.numero = vaMatches[0].round;//sera sempre o mesmo valor
-          ipTorneio.rodada_atual = vaRodada.numero;
-          for (const vaMatch of vaMatches) {
-            let vaPartida = new Partida();
-            vaPartida.jogadorBrancas = new Jogador();
-            vaPartida.jogadorBrancas.nome = vaMatch.playerOne.alias;
-            vaPartida.jogadorBrancas.username = vaMatch.playerOne.id;
-
-            vaPartida.jogadorNegras = new Jogador();
-            vaPartida.jogadorNegras.nome = vaMatch.playerTwo.alias;
-            vaPartida.jogadorNegras.username = vaMatch.playerTwo.id;
-
-            vaRodada.partidas.push(vaPartida);
-          }
-
-          ipTorneio.rodadas.push(vaRodada);
-          vaResult = true;
-        }
+      if (!vaJogador.nome) {
+        vaJogador.nome = vaJogador.username
       }
-    } else {
-      ipTorneio.status = 2;
-      vaResult = true;
-    }
-    return vaResult;
-  }
-
-  ranking(ipTorneio: Torneio) {
-    let vaJogadores: Jogador[] = [];
-    let vaTorneioSwiss = this.criarTorneioSuico(ipTorneio);
-    //pega o ranking
-    let vaPlayers = vaTorneioSwiss.standings(true);
-    if (vaPlayers) {
-      for (const vaPlayer of vaPlayers) {
-        let vaJogador: Jogador = new Jogador();
-        vaJogador.nome = vaPlayer.alias;
-        vaJogador.username = vaPlayer.id;
-        vaJogadores.push(vaJogador);
+      if (!vaJogador.rating) {
+        vaJogador.rating = 1500;
       }
+
+      return vaJogador;
     }
-
-    return vaJogadores;
-  }
-
-  async buscarJogador(ipUsername: string): Promise<Jogador> {
-    return undefined;
-    // let vaResult = await this.chessApi.buscarUsuario(ipUsername);
-    // if (vaResult) {
-    //   let vaJogador = new Jogador();
-    //   vaJogador.nome = vaResult?.profile?.firstName;
-    //   vaJogador.rating = vaResult.perfs?.rapid?.rating;
-    //   vaJogador.username = ipUsername;
-
-    //   if (!vaJogador.nome) {
-    //     vaJogador.nome = vaJogador.username
-    //   }
-    //   if (!vaJogador.rating) {
-    //     vaJogador.rating = 1500;
-    //   }
-
-    //   return vaJogador;
-    // }
   }
 
   async buscarResultados(ipTorneio: Torneio): Promise<boolean> {

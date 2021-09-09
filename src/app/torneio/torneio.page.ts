@@ -5,7 +5,7 @@ import { NavController } from '@ionic/angular';
 import { Jogador, Partida, Rodada, Torneio } from '../Models/types';
 import { OverlayService } from '../servicos/overlay.service';
 import { TorneioService } from '../servicos/torneio.service';
-import { XadrezMineirosApi } from '../servicos/xadrezmineiros-api.service';
+import { ServerApiResult, XadrezMineirosApi } from '../servicos/xadrezmineiros-api.service';
 
 @Component({
   selector: 'app-torneio',
@@ -20,6 +20,7 @@ export class TorneioPage implements OnInit {
 
   constructor(private route: ActivatedRoute,
     private serverApi:XadrezMineirosApi,
+    private torneioService:TorneioService,
     private fb: FormBuilder,
     private navCtrl: NavController,
     private overlayService: OverlayService) { }
@@ -59,18 +60,6 @@ export class TorneioPage implements OnInit {
           data_inicio: this.torneio.data_inicio.toISOString(),
           descricao: this.torneio.descricao
         });
-
-        // if (this.torneio.status == 1) {
-        //   let vaAchou = await this.torneioService.buscarResultados(this.torneio);
-        //   let vaMudou = this.torneioService.processarRodada(this.torneio);
-        //   if ((vaMudou) || (vaAchou)) {
-        //     this.salvar();
-        //   }
-        // }
-
-        // if (this.torneio.status == 2) {
-        //   this.ganhadores = this.torneioService.ranking(this.torneio);
-        // }
       }
     }
 
@@ -96,11 +85,20 @@ export class TorneioPage implements OnInit {
     this.torneio.ritmo = this.torneioForm.value.ritmo;    
     this.torneio.descricao = this.torneioForm.value.descricao;
     this.torneio.data_inicio = new Date(Date.parse(this.torneioForm.value.data_inicio));
+    let vaResult:ServerApiResult = undefined;
     if (!this.torneio.id) {
-      await this.serverApi.incluirTorneio(this.torneio)
+      vaResult = await this.serverApi.incluirTorneio(this.torneio)
     } else {
-      await this.serverApi.atualizarTorneio(this.torneio);
+      vaResult = await this.serverApi.atualizarTorneio(this.torneio);
     }   
+
+    if (vaResult){
+      if (vaResult.ok){
+        this.overlayService.showInfoMsg('Salvo com sucesso!')
+      }else{
+        this.overlayService.showError(vaResult.error);
+      }
+    }
   }
 
   async excluir() {
@@ -110,8 +108,11 @@ export class TorneioPage implements OnInit {
         buttons: [{
           text: "Sim",
           handler: async () => {
-            if (await this.serverApi.excluirTorneio(this.torneio.id)) {
+            let vaResult = await this.serverApi.excluirTorneio(this.torneio.id);
+            if (vaResult.ok) {
               this.voltar();
+            }else{
+              this.overlayService.showError(vaResult.error);
             }
           }
         }, { text: "Não" }],
@@ -121,35 +122,40 @@ export class TorneioPage implements OnInit {
   }
 
   async iniciar() {
-    // if (await this.serverApi.iniciarTorneio(this.torneio)) {
-    //   this.voltar();
-    // }
+    let vaResult = await this.serverApi.iniciarTorneio(this.torneio.id);
+    if (vaResult.ok){
+      this.voltar();
+    }else{
+      this.overlayService.showError(vaResult.error);
+    }
   }
 
+ 
+
   async pegarResultado(ipRodada: Rodada, ipPartida: Partida) {
-    // if (await this.torneioService.pegarResultado(this.torneio, ipRodada, ipPartida)) {
-    //   this.salvar();
-    // } else {
-    //   this.overlayService.toast({
-    //     message: "Partida não encontrada",
-    //     color: 'warning'
-    //   })
-    // }
+    if (await this.torneioService.pegarResultado(this.torneio, ipRodada, ipPartida)) {
+      this.salvar();
+    } else {
+      this.overlayService.toast({
+        message: "Partida não encontrada",
+        color: 'warning'
+      })
+    }
   }
 
 
   async adicionarJogador() {
-    // let vaJogador = await this.torneioService.buscarJogador(this.jogadorForm.value.username);
-    // if (vaJogador) {
-    //   this.torneio.jogadores.push(vaJogador);
-    //   this.salvar();
-    // } else {
-    //   this.overlayService.toast({
-    //     message: "Jogador não encontrado",
-    //     color: "warning"
-    //   });
-    // }
-    // this.jogadorForm.reset();
+    let vaJogador = await this.torneioService.buscarJogador(this.jogadorForm.value.username);
+    if (vaJogador) {
+      this.torneio.jogadores.push(vaJogador);
+      this.salvar();
+    } else {
+      this.overlayService.toast({
+        message: "Jogador não encontrado",
+        color: "warning"
+      });
+    }
+    this.jogadorForm.reset();
   }
 
   removerJogador(ipJogador: Jogador) {

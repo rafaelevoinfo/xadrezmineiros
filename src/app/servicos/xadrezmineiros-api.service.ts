@@ -3,6 +3,17 @@ import { environment } from "src/environments/environment";
 import { Storage } from "@capacitor/storage";
 import { Torneio } from "../Models/types";
 
+
+export class ServerApiResult{
+  ok:boolean;
+  error?:string;
+
+  constructor(ok:boolean, error?:string){
+    this.ok = ok;
+    this.error = error;
+  }
+}
+
 @Injectable({ providedIn: "root" })
 export class XadrezMineirosApi {
   baseUrl: string;
@@ -92,23 +103,33 @@ export class XadrezMineirosApi {
     }
   }
 
-  async incluirTorneio(ipTorneio: Torneio): Promise<string> {
-    let vaRawResponse = await this.post('/torneio', ipTorneio);
-    if (vaRawResponse.ok) {
-      return vaRawResponse.text()
-    } else {
-      return ""
+  async tratarRetornoServer(ipRawResponse:Response):Promise<ServerApiResult>{
+    if (ipRawResponse.ok){
+      return new ServerApiResult(true);
+    }else{      
+      return new ServerApiResult(false,  await ipRawResponse.text());
     }
   }
 
-  async atualizarTorneio(ipTorneio: Torneio): Promise<boolean> {
-    let vaRawResponse = await this.put('/torneio/' + ipTorneio.id, ipTorneio);
-    return vaRawResponse.ok;
+  async incluirTorneio(ipTorneio: Torneio): Promise<ServerApiResult> {
+    let vaRawResponse = await this.post('/torneio', ipTorneio);
+    return this.tratarRetornoServer(vaRawResponse); 
   }
 
-  async excluirTorneio(ipId: string): Promise<boolean> {
+  async atualizarTorneio(ipTorneio: Torneio): Promise<ServerApiResult> {
+    let vaRawResponse = await this.put('/torneio/' + ipTorneio.id, ipTorneio);
+    return this.tratarRetornoServer(vaRawResponse); 
+  }  
+
+  async excluirTorneio(ipId: string): Promise<ServerApiResult> {
     let vaRawResponse = await this.delete('/torneio/' + ipId);
-    return vaRawResponse.ok;
+    return this.tratarRetornoServer(vaRawResponse); 
+  }
+
+  async iniciarTorneio(ipId:string):Promise<ServerApiResult>{
+    let vaRawResponse = await this.put('/torneio/start/' + ipId, null);
+    return this.tratarRetornoServer(vaRawResponse); 
+        
   }
 
   async delete(ipUrl: string): Promise<Response> {
@@ -122,7 +143,7 @@ export class XadrezMineirosApi {
     return await fetch(this.baseUrl + ipUrl, {
       method: 'PUT',
       headers: this.criarAuthHeader(),
-      body: JSON.stringify(ipBody)
+      body: ipBody?JSON.stringify(ipBody):''
     });
   }
 
