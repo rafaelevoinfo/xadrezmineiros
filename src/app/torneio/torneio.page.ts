@@ -50,17 +50,21 @@ export class TorneioPage implements OnInit {
 
   async carregarTorneio(ipId: string) {
     if (ipId) {
-      this.torneio = await this.serverApi.buscarTorneio(ipId);
-
-      if (this.torneio) {
-        this.torneioForm.patchValue({
-          nome: this.torneio.nome,
-          qtde_rodadas: this.torneio.qtde_rodadas,
-          ritmo: this.torneio.ritmo,        
-          data_inicio: this.torneio.data_inicio.toISOString(),
-          descricao: this.torneio.descricao
-        });
+      let vaTorneio = await this.serverApi.buscarTorneio(ipId);
+      if (!Array.isArray(vaTorneio)){
+        this.torneio = vaTorneio;
+        if (this.torneio) {
+          this.torneioForm.patchValue({
+            nome: this.torneio.nome,
+            qtde_rodadas: this.torneio.qtde_rodadas,
+            ritmo: this.torneio.ritmo,        
+            data_inicio: this.torneio.data_inicio.toISOString(),
+            descricao: this.torneio.descricao
+          });
+        }
       }
+
+      
     }
 
     if (!this.torneio) {
@@ -147,8 +151,7 @@ export class TorneioPage implements OnInit {
   async adicionarJogador() {
     let vaJogador = await this.torneioService.buscarJogador(this.jogadorForm.value.username);
     if (vaJogador) {
-      this.torneio.jogadores.push(vaJogador);
-      this.salvar();
+      this.torneio.jogadores.push(vaJogador);      
     } else {
       this.overlayService.toast({
         message: "Jogador não encontrado",
@@ -161,8 +164,7 @@ export class TorneioPage implements OnInit {
   removerJogador(ipJogador: Jogador) {
     let vaIndex = this.torneio.jogadores.findIndex(j => j.username == ipJogador.username);
     if (vaIndex >= 0) {
-      this.torneio.jogadores.splice(vaIndex, 1);
-      this.salvar();
+      this.torneio.jogadores.splice(vaIndex, 1);      
     }
   }
 

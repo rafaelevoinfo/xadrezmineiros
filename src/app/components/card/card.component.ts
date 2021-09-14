@@ -20,7 +20,8 @@ export class CardComponent implements OnInit {
   
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit() {    
+    console.log(this.torneio.nome + ' '+ this.torneio.data_inicio)
     this.desenharGrafico(this.torneio.rodada_atual, this.torneio.qtde_rodadas);
   }
 

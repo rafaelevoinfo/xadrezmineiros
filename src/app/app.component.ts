@@ -79,5 +79,6 @@ export class AppComponent implements OnInit {
 
   logout() {    
     this.serverApi.logout();
+    this.router.navigateByUrl('/home')
   }
 }

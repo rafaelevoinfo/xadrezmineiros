@@ -1,20 +1,21 @@
-import { Injectable } from "@angular/core";
-import { environment } from "src/environments/environment";
-import { Storage } from "@capacitor/storage";
-import { Torneio } from "../Models/types";
+import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
+import { Storage } from '@capacitor/storage';
+import { Torneio } from '../Models/types';
 
+export class ServerApiResult {
+  ok: boolean;
+  error?: string;
 
-export class ServerApiResult{
-  ok:boolean;
-  error?:string;
-
-  constructor(ok:boolean, error?:string){
+  constructor(ok: boolean, error?: string) {
     this.ok = ok;
     this.error = error;
   }
 }
 
-@Injectable({ providedIn: "root" })
+type CallbackFunction = () => Promise<Torneio | Torneio[]>;
+
+@Injectable({ providedIn: 'root' })
 export class XadrezMineirosApi {
   baseUrl: string;
   token: string;
@@ -23,44 +24,43 @@ export class XadrezMineirosApi {
     this.baseUrl = environment.api_url;
     this.token = null;
     Storage.get({
-      key: 'token'
-    }).then(pair => {
-      this.token = pair.value
-    }).catch(reason => {
-      this.token = null
-    });
+      key: 'token',
+    })
+      .then((pair) => {
+        this.token = pair.value;
+      })
+      .catch((reason) => {
+        this.token = null;
+      });
   }
 
   async login(ipEmail, ipSenha) {
     let vaCredenciais = JSON.stringify({
       email: ipEmail.value,
       senha: ipSenha.value,
-    })
-
+    });
 
     const vaRawResponse = await window.fetch(this.baseUrl + '/login', {
-      method: "POST",
+      method: 'POST',
       body: vaCredenciais,
       headers: new Headers({
-        'content-type': 'application/json'
-      })
-    })
-
-
+        'content-type': 'application/json',
+      }),
+    });
 
     if (await vaRawResponse.ok) {
       let vaJsonResponse = await vaRawResponse.json();
-      if ((vaJsonResponse.auth) && (vaJsonResponse.token)) {
+      if (vaJsonResponse.auth && vaJsonResponse.token) {
         this.token = vaJsonResponse.token;
 
         await Storage.set({
-          key: "token",
-          value: this.token
-        })
-        return this.token
+          key: 'token',
+          value: this.token,
+        });
+        return this.token;
       }
     } else {
-      return false
+      return false;
     }
   }
 
@@ -70,100 +70,121 @@ export class XadrezMineirosApi {
   }
 
   isLogado(): boolean {
-    return this.token != null;    
+    return !!this.token;
   }
 
-  async buscarTorneios(ipSomenteAtivos: boolean) {
-    let vaUrl = '/torneios'
-    if (!ipSomenteAtivos) {
-      vaUrl += '?inativos=true'
-    }
-    const vaRawResponse = await this.get(vaUrl);
-
-    if (await vaRawResponse.ok) {
-      let vaTorneios = await vaRawResponse.json();
-      return vaTorneios
-    } else {
-      return false
-    }
-  }
-
-  async buscarTorneio(ipId: string): Promise<Torneio> {
-    const vaRawResponse = await this.get('/torneio/' + ipId);
-
-    if (vaRawResponse.ok) {
-      let vaTorneio: Torneio = await vaRawResponse.json();
-      vaTorneio.data_inicio = new Date(vaTorneio.data_inicio);
-      if (!environment.production) {
-        console.log(vaTorneio)
+  async buscarTorneios(ipSomenteAtivos: boolean):Promise<Torneio | Torneio[]> {
+    return await this.buscar(async () => {
+      let vaUrl = '/torneios';
+      if (!ipSomenteAtivos) {
+        vaUrl += '?inativos=true';
       }
-      return vaTorneio
-    } else {
-      return null
+      const vaRawResponse = await this.get(vaUrl);
+
+      if (await vaRawResponse.ok) {
+        let vaTorneios:Torneio[] = await vaRawResponse.json();
+        if (vaTorneios){
+          vaTorneios.map(t =>{
+            t.data_inicio = new Date(t.data_inicio);
+            return t;
+          });
+        }
+        return vaTorneios;
+      } else {
+        return null;
+      }
+    }, 'Erro ao buscar os torneios');
+  }
+
+  async buscarTorneio(ipId: string): Promise<Torneio | Torneio[]> {
+    return await this.buscar(async () => {
+      const vaRawResponse = await this.get('/torneio/' + ipId);
+
+      if (vaRawResponse.ok) {
+        let vaTorneio: Torneio = await vaRawResponse.json();
+        vaTorneio.data_inicio = new Date(vaTorneio.data_inicio);
+        if (!environment.production) {
+          console.log(vaTorneio);
+        }
+        return vaTorneio;
+      } else {
+        return null;
+      }
+    }, 'Erro ao buscar um torneio');
+  }
+
+  async buscar(
+    ipCallback: CallbackFunction,
+    ipMsgErro: string
+  ): Promise<Torneio | Torneio[]> {
+    try {
+      return await ipCallback();
+    } catch (error) {
+      console.log(`${ipMsgErro} Detalhes: ${error}`);
     }
   }
 
-  async tratarRetornoServer(ipRawResponse:Response):Promise<ServerApiResult>{
-    if (ipRawResponse.ok){
+  async tratarRetornoServer(ipRawResponse: Response): Promise<ServerApiResult> {
+    if (ipRawResponse.ok) {
       return new ServerApiResult(true);
-    }else{      
-      return new ServerApiResult(false,  await ipRawResponse.text());
+    } else {
+      return new ServerApiResult(false, await ipRawResponse.text());
     }
   }
 
   async incluirTorneio(ipTorneio: Torneio): Promise<ServerApiResult> {
     let vaRawResponse = await this.post('/torneio', ipTorneio);
-    return this.tratarRetornoServer(vaRawResponse); 
+    return this.tratarRetornoServer(vaRawResponse);
   }
 
   async atualizarTorneio(ipTorneio: Torneio): Promise<ServerApiResult> {
     let vaRawResponse = await this.put('/torneio/' + ipTorneio.id, ipTorneio);
-    return this.tratarRetornoServer(vaRawResponse); 
-  }  
+    return this.tratarRetornoServer(vaRawResponse);
+  }
 
   async excluirTorneio(ipId: string): Promise<ServerApiResult> {
     let vaRawResponse = await this.delete('/torneio/' + ipId);
-    return this.tratarRetornoServer(vaRawResponse); 
+    return this.tratarRetornoServer(vaRawResponse);
   }
 
-  async iniciarTorneio(ipId:string):Promise<ServerApiResult>{
+  async iniciarTorneio(ipId: string): Promise<ServerApiResult> {
     let vaRawResponse = await this.put('/torneio/start/' + ipId, null);
-    return this.tratarRetornoServer(vaRawResponse); 
-        
+    return this.tratarRetornoServer(vaRawResponse);
   }
 
   async delete(ipUrl: string): Promise<Response> {
     return await fetch(this.baseUrl + ipUrl, {
       method: 'DELETE',
-      headers: this.criarAuthHeader()
+      headers: this.criarHeaders(),
     });
   }
 
   async put(ipUrl: string, ipBody: any): Promise<Response> {
     return await fetch(this.baseUrl + ipUrl, {
       method: 'PUT',
-      headers: this.criarAuthHeader(),
-      body: ipBody?JSON.stringify(ipBody):''
+      headers: this.criarHeaders(),
+      body: ipBody ? JSON.stringify(ipBody) : '',
     });
   }
 
   async post(ipUrl: string, ipBody: any): Promise<Response> {
     return await fetch(this.baseUrl + ipUrl, {
       method: 'POST',
-      headers: this.criarAuthHeader(),
-      body: JSON.stringify(ipBody)
+      headers: this.criarHeaders(),
+      body: JSON.stringify(ipBody),
     });
   }
 
   async get(ipUrl: string): Promise<Response> {
     return await fetch(this.baseUrl + ipUrl, {
-      headers: this.criarAuthHeader()
-    })
+      headers: this.criarHeaders(),
+    });
   }
 
-  private criarAuthHeader(): Headers {
+  private criarHeaders(): Headers {
     return new Headers({
-      'x-access-token': this.token
-    })
+      'x-access-token': this.token,
+      'content-type': 'application/json',
+    });
   }
 }

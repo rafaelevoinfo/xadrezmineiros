@@ -56,7 +56,10 @@ export class TorneiosPage implements OnInit {
   }
 
   async buscarTorneios() {
-    this.torneios = await this.serverApi.buscarTorneios(false);
+    let vaTorneios = await this.serverApi.buscarTorneios(false);
+    if (Array.isArray(vaTorneios)){
+      this.torneios = vaTorneios;
+    }
   }
 
   abrirTorneio(ipTorneio: Torneio) {
