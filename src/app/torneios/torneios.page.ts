@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { IonCheckbox, NavController } from '@ionic/angular';
+import { IonCheckbox, IonInput, NavController } from '@ionic/angular';
+import { Timestamp } from 'rxjs';
 import { Torneio } from '../Models/types';
 import { TorneioService } from '../servicos/torneio.service';
 import { XadrezMineirosApi } from '../servicos/xadrezmineiros-api.service';
@@ -11,54 +12,47 @@ import { XadrezMineirosApi } from '../servicos/xadrezmineiros-api.service';
   styleUrls: ['./torneios.page.scss'],
 })
 export class TorneiosPage implements OnInit {
-
   @ViewChild(IonCheckbox) chkTorneioFinalizados: IonCheckbox;
+  @ViewChild(IonInput) editNome: IonInput;
 
   public torneios: Torneio[];
   data: Date;
+  delayPesquisa;
 
-
-  // current: number = 2;
-  // max: number = 6;
-  // stroke: number = 15;
-  // radius: number = 125;
-  // semicircle: boolean = false;
-  // rounded: boolean = true;
-  // responsive: boolean = true;
-  // clockwise: boolean = true;
-  // color: string = '#45ccce';
-  // background: string = '#eaeaea';
-  // duration: number = 800;
-  // animation: string = 'easeOutCubic';
-  // animationDelay: number = 1;
-  // animations: string[] = [];
-  // gradient: boolean = false;
-  // realCurrent: number = 0;
-  // rate:number;
-
-
-  constructor(
-    private serverApi:XadrezMineirosApi,    
-    private router: Router) {
+  constructor(private serverApi: XadrezMineirosApi, private router: Router) {
     this.data = new Date();
   }
-
 
   ngOnInit() {
     //console.log(this.router.url);
   }
-  ngAfterViewInit() {
-
-  }
+  ngAfterViewInit() {}
 
   ionViewDidEnter() {
     this.buscarTorneios();
   }
 
   async buscarTorneios() {
-    let vaTorneios = await this.serverApi.buscarTorneios(false);
-    if (Array.isArray(vaTorneios)){
+    // console.log(event?.target.value);    
+    if (this.delayPesquisa) {
+      clearTimeout(this.delayPesquisa);
+    }
+
+    this.delayPesquisa = setTimeout(async () => {
+      this.pesquisar()
+    }, 500);
+  }
+
+  async pesquisar(){
+    let vaTorneios = await this.serverApi.buscarTorneios({
+      somente_ativos: !this.chkTorneioFinalizados.checked,
+      nome: String(this.editNome.value)
+    });
+
+    if (Array.isArray(vaTorneios)) {
       this.torneios = vaTorneios;
+    }else{
+      this.torneios = [];
     }
   }
 
@@ -70,5 +64,4 @@ export class TorneiosPage implements OnInit {
   criarTorneio() {
     this.router.navigateByUrl('/torneio');
   }
-
 }

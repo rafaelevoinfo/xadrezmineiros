@@ -38,7 +38,8 @@
               <a href="{{vaPartida.link}}" [style.pointer-events]="vaPartida.link?'default':'none'"
                 [style.cursor]="vaPartida.link ? 'pointer': 'default'">{{vaPartida.jogadorBrancas.nome}} VS
                 {{vaPartida.jogadorNegras.nome}} {{vaPartida.resultado}}</a>
-              <ion-button color="light" *ngIf="!vaPartida.resultado" slot="end" (click)="pegarResultado(vaRodada, vaPartida)">Pegar
+              <ion-button color="light" *ngIf="!vaPartida.resultado" slot="end"
+                (click)="pegarResultado(vaRodada, vaPartida)">Pegar
                 resultado</ion-button>
             </ion-item>
           </ion-list>
@@ -50,7 +51,8 @@
         <form *ngIf="!isIniciado()" [formGroup]='jogadorForm' (submit)="adicionarJogador()">
           <ion-item lines="none" class="add-jogador">
             <ion-input formControlName="username" placeholder="Username do Lichess"></ion-input>
-            <ion-button color="light" type="submit" [disabled]="jogadorForm.invalid || torneioForm.invalid" size="small">Entrar no torneio
+            <ion-button color="light" type="submit" [disabled]="jogadorForm.invalid || torneioForm.invalid"
+              size="small">Entrar no torneio
             </ion-button>
           </ion-item>
 
@@ -61,25 +63,26 @@
             <ion-label color="light">
               {{vaJogador.nome}} ({{vaJogador.username}} - {{vaJogador.rating}})
             </ion-label>
-            <ion-button [class.invisivel]="(!serverApi.isLogado()) ||(torneio?.status!=0)" color="dark" (click)="removerJogador(vaJogador)" size="small">
+            <ion-button *ngIf="(serverApi.isLogado()) && (torneio?.status<=0)" color="dark"
+              (click)="removerJogador(vaJogador)" size="small">
               <ion-icon slot="icon-only" name="trash"></ion-icon>
             </ion-button>
           </ion-item>
         </ion-list>
       </div>
-
-      <!--Usando o class.invisivel é melhor do que o ngIf pq com o ngIf da pra ver os botões aparecendo e depois sumindo-->
-      <div class="botoes" [class.invisivel]="!serverApi.isLogado()">
+      
+      <div class="botoes" *ngIf="serverApi.isLogado()">
         <ion-button class="btn-alinhado-esquerda" color="danger" (click)="excluir()">Excluir
           torneio
         </ion-button>
 
         <div class="btn-alinhado-direita">
-         
-          <ion-button *ngIf="!isIniciado() && (torneio?.jogadores?.length > 1)" color="ligth"
-            (click)="iniciar()" fill="outline">Iniciar torneio
+
+          <ion-button *ngIf="!isIniciado() && (torneio?.jogadores?.length > 1)" color="ligth" (click)="iniciar()"
+            fill="outline">Iniciar torneio
           </ion-button>
-          <ion-button *ngIf="torneio?.status <= 1" [disabled]="torneioForm.invalid" color="light" (click)="salvarTorneio()">
+          <ion-button *ngIf="torneio?.status <= 1" [disabled]="torneioForm.invalid || salvando" color="light"
+            (click)="salvar()">
             Salvar</ion-button>
         </div>
       </div>

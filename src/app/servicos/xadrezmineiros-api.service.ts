@@ -2,15 +2,21 @@ import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Storage } from '@capacitor/storage';
 import { Torneio } from '../Models/types';
+import { ok } from 'assert';
 
-export class ServerApiResult {
+export interface ServerApiResult {
   ok: boolean;
+  dados?: string;
   error?: string;
 
-  constructor(ok: boolean, error?: string) {
-    this.ok = ok;
-    this.error = error;
-  }
+  // public constructor(init?: Partial<ServerApiResult>) {
+  //   Object.assign(this, init);
+  // }
+}
+
+interface IFiltrosPesquisa{
+  somente_ativos:boolean;
+  nome?:string;
 }
 
 type CallbackFunction = () => Promise<Torneio | Torneio[]>;
@@ -73,18 +79,26 @@ export class XadrezMineirosApi {
     return !!this.token;
   }
 
-  async buscarTorneios(ipSomenteAtivos: boolean):Promise<Torneio | Torneio[]> {
+  async buscarTorneios(ipFiltros:IFiltrosPesquisa): Promise<Torneio | Torneio[]> {
     return await this.buscar(async () => {
       let vaUrl = '/torneios';
-      if (!ipSomenteAtivos) {
+      if (!ipFiltros.somente_ativos) {
         vaUrl += '?inativos=true';
       }
+      if (ipFiltros.nome){
+        if (vaUrl.includes('?')){
+          vaUrl += '&nome='+ipFiltros.nome;
+        }else{
+          vaUrl += '?nome='+ipFiltros.nome;
+        }
+      }
+
       const vaRawResponse = await this.get(vaUrl);
 
       if (await vaRawResponse.ok) {
-        let vaTorneios:Torneio[] = await vaRawResponse.json();
-        if (vaTorneios){
-          vaTorneios.map(t =>{
+        let vaTorneios: Torneio[] = await vaRawResponse.json();
+        if (vaTorneios) {
+          vaTorneios.map((t) => {
             t.data_inicio = new Date(t.data_inicio);
             return t;
           });
@@ -126,9 +140,15 @@ export class XadrezMineirosApi {
 
   async tratarRetornoServer(ipRawResponse: Response): Promise<ServerApiResult> {
     if (ipRawResponse.ok) {
-      return new ServerApiResult(true);
+      return {
+        ok: true,
+        dados: await ipRawResponse.text(),
+      };
     } else {
-      return new ServerApiResult(false, await ipRawResponse.text());
+      return {
+        ok: false,
+        error: await ipRawResponse.text(),
+      };
     }
   }
 

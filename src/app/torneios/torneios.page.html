@@ -3,38 +3,25 @@
     <img src="assets/torneios.svg" alt="" class="centro imagem">
     <hr class="centro linha" />
 
-    <div>
-      <ion-button class="novo-torneio" [class.invisivel]="!serverApi.isLogado()" color="light" (click)="criarTorneio()">Criar novo torneio </ion-button>
+    <div *ngIf="serverApi.isLogado()">
+      <ion-button class="novo-torneio" color="light" (click)="criarTorneio()">Criar novo torneio </ion-button>
     </div>
-    
-    <div class="cards-torneio">
 
+    <div class="pesquisa">
+      <ion-item class="pesquisa-nome">
+        <ion-input type="search" placeholder="Pesquisar pelo nome do torneio"
+          (ionChange)="buscarTorneios()"></ion-input>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-checkbox color="dark" (ionChange)="pesquisar()"></ion-checkbox>
+        <ion-label>Exibir finalizados</ion-label>
+      </ion-item>
+    </div>
+
+    <div class="cards-torneio">
       <app-card class="card-torneio" *ngFor="let vaTorneio of torneios" [torneio]="vaTorneio"
         (click)="abrirTorneio(vaTorneio)"></app-card>
-
     </div>
-   
-  </div>
 
-  <!-- 
-  <div style="width: 50px;">
-  <round-progress [current]="current" [max]="max" [stroke]="stroke" [radius]="radius" [semicircle]="semicircle" [rounded]="rounded"
-  [responsive]="responsive" [clockwise]="clockwise" [color]="gradient ? 'url(#gradient)' : color" [background]="background"
-  [duration]="duration" [animation]="animation" [animationDelay]="animationDelay" label="2/6">
-  
- </round-progress> 
-</div> -->
-  <!-- <ion-item lines="none" color="dark">
-    <ion-checkbox (ionChange)="buscarTorneios()"></ion-checkbox>Exibir torneios anteriores
-  </ion-item>
-  <ion-button *ngIf="authService.isLogado" expand="block" (click)="criarTorneio()">Criar novo torneio </ion-button>
-  <ion-list>
-    <ion-item *ngFor="let vaTorneio of torneios" color="dark" lines="full" button (click)="abrirTorneio(vaTorneio)">
-      <ion-label>
-        {{vaTorneio.nome}} - {{vaTorneio.data_inicio|date:"dd.MM.y"}}<br />
-        <h6>{{vaTorneio.jogadores?.length}} jogadores {{vaTorneio.qtde_rodadas}} rodadas</h6>
-      </ion-label>
-      <ion-note slot="end" color="light">{{vaTorneio.getDescricaoStatus()}}</ion-note>
-    </ion-item>
-  </ion-list> -->
+  </div>
 </ion-content>
