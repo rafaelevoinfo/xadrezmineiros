@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Jogador, Partida, Rodada, Torneio } from '../Models/types';
-import { Swiss, EventManager } from 'tournament-organizer';
 import { LichessApiService } from './lichess-api.service';
 import { XadrezMineirosApi } from './xadrezmineiros-api.service';
 
@@ -10,51 +9,8 @@ import { XadrezMineirosApi } from './xadrezmineiros-api.service';
 export class TorneioService {
   torneioManager;
 
-  constructor(private serverApi:XadrezMineirosApi,
-    private chessApi: LichessApiService) {
-    this.torneioManager = new EventManager();
+  constructor(private chessApi: LichessApiService) {
   }
-
-
-  criarTorneioSuico(ipTorneio: Torneio): Swiss {
-    const vaTorneioSwiss = this.torneioManager.createTournament(null, {
-      name: ipTorneio.nome,
-      format: 'swiss',
-      dutch: true,
-      seedOrder: "des",
-      seededPlayers: true,
-      numberOfRounds: ipTorneio.qtde_rodadas,
-    });
-
-    for (const vaJogador of ipTorneio.jogadores) {
-      vaTorneioSwiss.addPlayer(vaJogador.nome, vaJogador.username, vaJogador.rating);
-    }
-
-    vaTorneioSwiss.startEvent();
-
-    //vamos alimentar o vaTorneioSwiss com as informações que ja temos
-    if ((ipTorneio.rodadas) && (ipTorneio.rodadas.length > 0)) {
-      for (let i = 0; i < ipTorneio.rodadas.length; i++) {
-        let vaRodada = ipTorneio.rodadas[i];
-        let vaMatches = vaTorneioSwiss.activeMatches(i + 1);
-        for (const vaMatch of vaMatches) {
-          let vaPartida = vaRodada.partidas.find((p) => {
-            return (p.jogadorBrancas.username == vaMatch.playerOne.id) && (p.jogadorNegras.username == vaMatch.playerTwo.id)
-          });
-
-          if ((vaPartida) && (vaPartida.resultado)) {
-            let vaPlayerOneWins = vaPartida.resultado == '1-0' ? 1 : 0;
-            let vaPlayerTwoWins = vaPartida.resultado == '0-1' ? 1 : 0;
-
-            vaTorneioSwiss.result(vaMatch, vaPlayerOneWins, vaPlayerTwoWins);
-          }
-        }
-      }
-    }
-
-    return vaTorneioSwiss;
-  }
-
 
   async buscarJogador(ipUsername: string): Promise<Jogador> {    
     let vaResult = await this.chessApi.buscarUsuario(ipUsername);

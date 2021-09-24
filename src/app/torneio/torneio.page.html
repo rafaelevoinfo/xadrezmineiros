@@ -48,7 +48,7 @@
 
       <span class="titulo-group">Jogadores</span>
       <div class="jogadores">
-        <form *ngIf="!isIniciado()" [formGroup]='jogadorForm' (submit)="adicionarJogador()">
+        <form *ngIf="!isIniciado() && serverApi.isLogado()" [formGroup]='jogadorForm' (submit)="adicionarJogador()">
           <ion-item lines="none" class="add-jogador">
             <ion-input formControlName="username" placeholder="Username do Lichess"></ion-input>
             <ion-button color="light" type="submit" [disabled]="jogadorForm.invalid || torneioForm.invalid"

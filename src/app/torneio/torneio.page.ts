@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { Jogador, Partida, Rodada, Torneio } from '../Models/types';
 import { OverlayService } from '../servicos/overlay.service';
@@ -28,7 +28,8 @@ export class TorneioPage implements OnInit {
     private torneioService: TorneioService,
     private fb: FormBuilder,
     private navCtrl: NavController,
-    private overlayService: OverlayService
+    private overlayService: OverlayService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -99,6 +100,9 @@ export class TorneioPage implements OnInit {
         if (vaResult.ok) {
           this.torneio.id = vaResult.dados;
           this.overlayService.showInfoMsg('Salvo com sucesso!');
+        } if (vaResult.necessario_login){
+          this.overlayService.showError(vaResult.error);
+          this.router.navigateByUrl('/login')
         } else {
           this.overlayService.showError(vaResult.error);
         }

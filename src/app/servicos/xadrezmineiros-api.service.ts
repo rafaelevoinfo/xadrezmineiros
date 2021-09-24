@@ -6,6 +6,7 @@ import { ok } from 'assert';
 
 export interface ServerApiResult {
   ok: boolean;
+  necessario_login?:boolean;
   dados?: string;
   error?: string;
 
@@ -14,9 +15,9 @@ export interface ServerApiResult {
   // }
 }
 
-interface IFiltrosPesquisa{
-  somente_ativos:boolean;
-  nome?:string;
+interface IFiltrosPesquisa {
+  somente_ativos: boolean;
+  nome?: string;
 }
 
 type CallbackFunction = () => Promise<Torneio | Torneio[]>;
@@ -79,17 +80,19 @@ export class XadrezMineirosApi {
     return !!this.token;
   }
 
-  async buscarTorneios(ipFiltros:IFiltrosPesquisa): Promise<Torneio | Torneio[]> {
+  async buscarTorneios(
+    ipFiltros: IFiltrosPesquisa
+  ): Promise<Torneio | Torneio[]> {
     return await this.buscar(async () => {
       let vaUrl = '/torneios';
       if (!ipFiltros.somente_ativos) {
         vaUrl += '?inativos=true';
       }
-      if (ipFiltros.nome){
-        if (vaUrl.includes('?')){
-          vaUrl += '&nome='+ipFiltros.nome;
-        }else{
-          vaUrl += '?nome='+ipFiltros.nome;
+      if (ipFiltros.nome) {
+        if (vaUrl.includes('?')) {
+          vaUrl += '&nome=' + ipFiltros.nome;
+        } else {
+          vaUrl += '?nome=' + ipFiltros.nome;
         }
       }
 
@@ -145,10 +148,19 @@ export class XadrezMineirosApi {
         dados: await ipRawResponse.text(),
       };
     } else {
-      return {
-        ok: false,
-        error: await ipRawResponse.text(),
-      };
+      if (ipRawResponse.status == 401) {
+        this.logout();
+        return {
+          ok: false,
+          necessario_login: true,
+          error: await "Login não efetuado ou tempo expirado",
+        };
+      } else {
+        return {
+          ok: false,
+          error: await ipRawResponse.text(),
+        };
+      }
     }
   }
 
