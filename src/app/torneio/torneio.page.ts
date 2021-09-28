@@ -54,6 +54,10 @@ export class TorneioPage implements OnInit {
     return this.torneio?.status >= 1;    
   }
 
+  isPermitidoIniciar():boolean{
+    return this.torneio?.id && (this.torneio?.status <= 0) && (this.torneio?.jogadores?.length > 1);
+  }
+
   async carregarTorneio(ipId: string) {
     if (ipId) {
       let vaTorneio = await this.serverApi.buscarTorneio(ipId);
@@ -100,9 +104,9 @@ export class TorneioPage implements OnInit {
         if (vaResult.ok) {
           this.torneio.id = vaResult.dados;
           this.overlayService.showInfoMsg('Salvo com sucesso!');
-        } if (vaResult.necessario_login){
+        } else if (vaResult.necessario_login){
           this.overlayService.showError(vaResult.error);
-          this.router.navigateByUrl('/login')
+          this.router.navigateByUrl('/login');
         } else {
           this.overlayService.showError(vaResult.error);
         }
@@ -125,6 +129,9 @@ export class TorneioPage implements OnInit {
               );
               if (vaResult.ok) {
                 this.voltar();
+              } else if (vaResult.necessario_login){
+                this.overlayService.showError(vaResult.error);
+                this.router.navigateByUrl('/login');
               } else {
                 this.overlayService.showError(vaResult.error);
               }
@@ -137,9 +144,16 @@ export class TorneioPage implements OnInit {
   }
 
   async iniciar() {
-    let vaResult = await this.serverApi.iniciarTorneio(this.torneio.id);
+    if (!this.torneio.id){
+      this.overlayService.showError("Necessário salvar o torneio antes de inicia-lo.")
+      return;
+    }
+    let vaResult = await this.serverApi.iniciarTorneio(this.torneio.id);    
     if (vaResult.ok) {
       this.voltar();
+    } else if (vaResult.necessario_login){
+      this.overlayService.showError(vaResult.error);
+      this.router.navigateByUrl('/login');
     } else {
       this.overlayService.showError(vaResult.error);
     }

@@ -78,7 +78,7 @@
 
         <div class="btn-alinhado-direita">
 
-          <ion-button *ngIf="!isIniciado() && (torneio?.jogadores?.length > 1)" color="ligth" (click)="iniciar()"
+          <ion-button *ngIf="isPermitidoIniciar()" color="ligth" (click)="iniciar()"
             fill="outline">Iniciar torneio
           </ion-button>
           <ion-button *ngIf="torneio?.status <= 1" [disabled]="torneioForm.invalid || salvando" color="light"

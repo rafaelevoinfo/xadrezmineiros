@@ -148,17 +148,19 @@ export class XadrezMineirosApi {
         dados: await ipRawResponse.text(),
       };
     } else {
-      if (ipRawResponse.status == 401) {
+      let vaResultJson = await ipRawResponse.json();
+      console.log(vaResultJson);
+      if ((ipRawResponse.status == 401) || (vaResultJson.auth===false)) {
         this.logout();
         return {
           ok: false,
           necessario_login: true,
-          error: await "Login não efetuado ou tempo expirado",
+          error: "Login não efetuado ou tempo expirado",
         };
       } else {
         return {
           ok: false,
-          error: await ipRawResponse.text(),
+          error: vaResultJson.message ? vaResultJson.message: "Erro no servidor",
         };
       }
     }
