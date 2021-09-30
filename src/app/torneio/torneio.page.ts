@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { Jogador, Partida, Rodada, Torneio } from '../Models/types';
 import { OverlayService } from '../servicos/overlay.service';
-import { TorneioService } from '../servicos/torneio.service';
 import {
   ServerApiResult,
   XadrezMineirosApi,
@@ -24,8 +23,7 @@ export class TorneioPage implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private serverApi: XadrezMineirosApi,
-    private torneioService: TorneioService,
+    public serverApi: XadrezMineirosApi,
     private fb: FormBuilder,
     private navCtrl: NavController,
     private overlayService: OverlayService,
@@ -159,29 +157,32 @@ export class TorneioPage implements OnInit {
     }
   }
 
-  async pegarResultado(ipRodada: Rodada, ipPartida: Partida) {
-    if (
-      await this.torneioService.pegarResultado(
-        this.torneio,
-        ipRodada,
-        ipPartida
-      )
-    ) {
-      this.salvar();
+  async processarTorneio(){
+    let vaResult:ServerApiResult = await this.serverApi.processarTorneio(this.torneio.id);
+    if ((vaResult.ok) && (vaResult.dados)) {      
+      this.torneio = JSON.parse(vaResult.dados)      
+    } else if (vaResult.necessario_login) {
+      this.overlayService.showError(vaResult.error);
+      this.router.navigateByUrl('/login');
     } else {
       this.overlayService.toast({
-        message: 'Partida não encontrada',
-        color: 'warning',
-      });
+        message:"Nenhuma alteração encontrada",
+        color:'warning'
+      })
     }
   }
 
   async adicionarJogador() {
-    let vaJogador = await this.torneioService.buscarJogador(
+    let vaResult = await this.serverApi.buscarJogador(      
       this.jogadorForm.value.username
     );
-    if (vaJogador) {
+    console.log(vaResult);
+    if (vaResult.status == 200){
+      let vaJogador = JSON.parse(vaResult.dados);
       this.torneio.jogadores.push(vaJogador);
+    } else if (vaResult.necessario_login) {
+      this.overlayService.showError(vaResult.error);
+      this.router.navigateByUrl('/login');
     } else {
       this.overlayService.toast({
         message: 'Jogador não encontrado',

@@ -72,11 +72,12 @@ ion-datetime {
 
 .titulo-group {
   display: inline-block;
-  width: 100%;
+  // width: 100%;
   font-size: 1.5rem;
   font-weight: bold;  
   margin-bottom: 5px;
   margin-top: 5px;
+  padding-right: 1rem;
 }
 
 .rodadas, .jogadores{
@@ -108,6 +109,13 @@ a:hover {
   color: gray;
 }
 
+.resultado {
+  display: block;
+  font-size: .8rem;
+  color: white;
+
+}
+
 .botoes {
   display: flex;
 }
@@ -118,6 +126,19 @@ a:hover {
 
 .btn-alinhado-esquerda{
   margin-right: auto;
+}
+
+
+
+.flex {
+  display: flex;
+  direction: row;
+  // justify-content: center;
+  align-items: center;
+}
+
+.alinhado-centro{
+  text-align: center;
 }
 
 

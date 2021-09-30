@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
 import { environment } from 'src/environments/environment';
 import { Storage } from '@capacitor/storage';
-import { Torneio } from '../Models/types';
+import { Jogador, Torneio } from '../Models/types';
 import { ok } from 'assert';
+import { JsonPipe } from '@angular/common';
 
 export interface ServerApiResult {
   ok: boolean;
+  status:number;
   necessario_login?:boolean;
   dados?: string;
   error?: string;
@@ -145,25 +147,43 @@ export class XadrezMineirosApi {
     if (ipRawResponse.ok) {
       return {
         ok: true,
+        status: ipRawResponse.status,
         dados: await ipRawResponse.text(),
       };
     } else {
-      let vaResultJson = await ipRawResponse.json();
-      console.log(vaResultJson);
-      if ((ipRawResponse.status == 401) || (vaResultJson.auth===false)) {
+      let vaResultJson = undefined;
+      try{
+        let vaResultJson = await ipRawResponse.json();
+      }catch{
+        //apenas para caso nao tenha um json valido
+      }
+      
+      if ((ipRawResponse.status == 401) || (vaResultJson?.auth===false)) {
         this.logout();
         return {
           ok: false,
+          status: ipRawResponse.status,
           necessario_login: true,
           error: "Login não efetuado ou tempo expirado",
         };
       } else {
         return {
           ok: false,
-          error: vaResultJson.message ? vaResultJson.message: "Erro no servidor",
+          status: ipRawResponse.status,
+          error: vaResultJson?.message ? vaResultJson.message: "Erro no servidor",
         };
       }
     }
+  }
+
+  async buscarJogador(username:string):Promise<ServerApiResult>{
+    let vaRawResponse = await this.get('/jogador/'+username);
+    return await this.tratarRetornoServer(vaRawResponse);
+  }
+
+  async processarTorneio(id:string):Promise<ServerApiResult>{
+    let vaRawResponse = await this.get('/torneio/processar/'+id);
+    return await this.tratarRetornoServer(vaRawResponse);    
   }
 
   async incluirTorneio(ipTorneio: Torneio): Promise<ServerApiResult> {

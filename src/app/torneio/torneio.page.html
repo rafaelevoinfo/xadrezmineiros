@@ -29,18 +29,22 @@
         </ion-item>
       </div>
 
-      <span class="titulo-group" *ngIf="isIniciado()">Rodadas</span>
-      <div class="rodadas" *ngIf="isIniciado()">
+      <div class="flex" *ngIf="isIniciado()">
+        <span class="titulo-group" >Rodadas</span>
+        <ion-button color="light" *ngIf="serverApi.isLogado()" size="small" (click)="processarTorneio()">Pegar resultados</ion-button>
+      </div>
+      
+      <div class="rodadas" *ngIf="isIniciado()">        
         <div *ngFor="let vaRodada of torneio?.rodadas;index as i">
           <span class="titulo-rodada">Rodada {{vaRodada.numero}} - {{vaRodada.data_inicio|date:'dd.MM.y'}}</span>
           <ion-list class="partidas">
             <ion-item class="partida" *ngFor="let vaPartida of torneio.rodadas[i].partidas">
-              <a href="{{vaPartida.link}}" [style.pointer-events]="vaPartida.link?'default':'none'"
+              <div class="alinhado-centro">
+                <a href="{{vaPartida.link}}" [style.pointer-events]="vaPartida.link?'default':'none'"
                 [style.cursor]="vaPartida.link ? 'pointer': 'default'">{{vaPartida.jogadorBrancas.nome}} VS
-                {{vaPartida.jogadorNegras.nome}} {{vaPartida.resultado}}</a>
-              <ion-button color="light" *ngIf="!vaPartida.resultado" slot="end"
-                (click)="pegarResultado(vaRodada, vaPartida)">Pegar
-                resultado</ion-button>
+                {{vaPartida.jogadorNegras.nome}}</a>              
+                <span class="resultado">{{vaPartida.resultado}}</span>
+              </div>              
             </ion-item>
           </ion-list>
         </div>

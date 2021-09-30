@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { IonCheckbox, IonInput, NavController } from '@ionic/angular';
 import { Timestamp } from 'rxjs';
 import { Torneio } from '../Models/types';
-import { TorneioService } from '../servicos/torneio.service';
 import { XadrezMineirosApi } from '../servicos/xadrezmineiros-api.service';
 
 @Component({
@@ -19,7 +18,7 @@ export class TorneiosPage implements OnInit {
   data: Date;
   delayPesquisa;
 
-  constructor(private serverApi: XadrezMineirosApi, private router: Router) {
+  constructor(public serverApi: XadrezMineirosApi, private router: Router) {
     this.data = new Date();
   }
 
