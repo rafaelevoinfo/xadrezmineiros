@@ -14,8 +14,8 @@ export class AppComponent implements OnInit {
   indexChecked: number = -1;
   pages = ['home', 'torneios', 'login', 'torneio'];
 
-  constructor(private serverApi:XadrezMineirosApi, private router: Router, private activeRouter: ActivatedRoute) {
-
+  constructor(public serverApi:XadrezMineirosApi, private router: Router, private activeRouter: ActivatedRoute) {
+    
   }
 
   ngOnInit() {
@@ -69,11 +69,6 @@ export class AppComponent implements OnInit {
         this.router.navigateByUrl(vaLink);
       }
     }
-
-  }
-
-
-  login() {
 
   }
 

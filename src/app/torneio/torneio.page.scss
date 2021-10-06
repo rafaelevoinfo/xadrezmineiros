@@ -77,12 +77,32 @@ ion-datetime {
   font-weight: bold;  
   margin-bottom: 5px;
   margin-top: 5px;
-  padding-right: 1rem;
+  padding-right: 1rem;  
+}
+
+.expanded::before{    
+  content: url('../../assets/icon/expanded.png'); 
+  vertical-align: middle;
+}
+
+.collapsed::before {
+  content: url('../../assets/icon/collapsed.png'); 
+  vertical-align: middle;
 }
 
 .rodadas, .jogadores{
   padding: 0px 0px 0px 10px;
   border-left: 2px solid white;
+  max-height:1000px;
+  transition: max-height 500ms ease-in-out;
+}
+
+.rodadas-hidden, .jogadores-hidden {  
+  padding: 0px 0px 0px 10px;
+  border-left: 2px solid white;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 200ms ease-in-out;
 }
 
 .titulo-rodada{
@@ -131,8 +151,7 @@ a:hover {
 
 
 .flex {
-  display: flex;
-  direction: row;
+  display: flex;  
   // justify-content: center;
   align-items: center;
 }

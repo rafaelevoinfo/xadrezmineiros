@@ -20,6 +20,9 @@ export class TorneioPage implements OnInit {
   jogadorForm: FormGroup;
   ganhadores: Jogador[] = [];
   salvando: boolean;
+  panelsState:boolean[]=[false, false];
+  panelClasses:string[]=['rodadas', 'jogadores'];
+  panelExpandClass:string[]=['expanded', 'expanded'];
 
   constructor(
     private route: ActivatedRoute,
@@ -203,5 +206,17 @@ export class TorneioPage implements OnInit {
 
   voltar() {
     this.navCtrl.navigateBack('/torneios');
+  }
+
+  collapse(index:number){
+    this.panelsState[index] = !this.panelsState[index];
+    if (this.panelsState[index]){
+      this.panelClasses[index] = this.panelClasses[index]+'-hidden'
+      this.panelExpandClass[index] = 'collapsed';
+
+    }else{
+      this.panelClasses[index] = this.panelClasses[index].replace('-hidden','')
+      this.panelExpandClass[index] = 'expanded';
+    }
   }
 }

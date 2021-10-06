@@ -30,11 +30,11 @@
       </div>
 
       <div class="flex" *ngIf="isIniciado()">
-        <span class="titulo-group" >Rodadas</span>
+        <span class="titulo-group {{panelExpandClass[0]}}" (click)="collapse(0)">Rodadas</span>
         <ion-button color="light" *ngIf="serverApi.isLogado()" size="small" (click)="processarTorneio()">Pegar resultados</ion-button>
       </div>
       
-      <div class="rodadas" *ngIf="isIniciado()">        
+      <div [class]="panelClasses[0]" *ngIf="isIniciado()">        
         <div *ngFor="let vaRodada of torneio?.rodadas;index as i">
           <span class="titulo-rodada">Rodada {{vaRodada.numero}} - {{vaRodada.data_inicio|date:'dd.MM.y'}}</span>
           <ion-list class="partidas">
@@ -50,8 +50,8 @@
         </div>
       </div>
 
-      <span class="titulo-group">Jogadores</span>
-      <div class="jogadores">
+      <span class="titulo-group {{panelExpandClass[1]}}" (click)="collapse(1)">Jogadores</span>
+      <div [class]="panelClasses[1]">
         <form *ngIf="!isIniciado() && serverApi.isLogado()" [formGroup]='jogadorForm' (submit)="adicionarJogador()">
           <ion-item lines="none" class="add-jogador">
             <ion-input formControlName="username" placeholder="Username do Lichess"></ion-input>
