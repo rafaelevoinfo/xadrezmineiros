@@ -39,6 +39,7 @@ export class TorneioPage implements OnInit {
       qtde_rodadas: ['', [Validators.required]],
       ritmo: [10, [Validators.required]],
       data_inicio: ['', [Validators.required]],
+      tipo:[0, [Validators.required]],
       descricao: ['', []],
     });
 
@@ -70,7 +71,9 @@ export class TorneioPage implements OnInit {
             qtde_rodadas: this.torneio.qtde_rodadas,
             ritmo: this.torneio.ritmo,
             data_inicio: this.torneio.data_inicio.toISOString(),
+            tipo: this.torneio.tipo,
             descricao: this.torneio.descricao,
+
           });
         }
       }
@@ -79,6 +82,8 @@ export class TorneioPage implements OnInit {
     if (!this.torneio) {
       this.torneio = new Torneio();
     }
+
+    this.ordernarJogadores();
   }
 
   async salvar() {
@@ -91,6 +96,7 @@ export class TorneioPage implements OnInit {
       this.torneio.qtde_rodadas = this.torneioForm.value.qtde_rodadas;
       this.torneio.ritmo = this.torneioForm.value.ritmo;
       this.torneio.descricao = this.torneioForm.value.descricao;
+      this.torneio.tipo = this.torneioForm.value.tipo;
       this.torneio.data_inicio = new Date(
         Date.parse(this.torneioForm.value.data_inicio)
       );
@@ -103,7 +109,10 @@ export class TorneioPage implements OnInit {
 
       if (vaResult) {
         if (vaResult.ok) {
-          this.torneio.id = vaResult.dados;
+          if (!this.torneio.id) {
+            this.torneio.id = vaResult.dados;
+          }
+          console.log(this.torneio);
           this.overlayService.showInfoMsg('Salvo com sucesso!');
         } else if (vaResult.necessario_login){
           this.overlayService.showError(vaResult.error);
@@ -183,6 +192,8 @@ export class TorneioPage implements OnInit {
     if (vaResult.status == 200){
       let vaJogador = JSON.parse(vaResult.dados);
       this.torneio.jogadores.push(vaJogador);
+
+      this.ordernarJogadores();
     } else if (vaResult.necessario_login) {
       this.overlayService.showError(vaResult.error);
       this.router.navigateByUrl('/login');
@@ -201,6 +212,7 @@ export class TorneioPage implements OnInit {
     );
     if (vaIndex >= 0) {
       this.torneio.jogadores.splice(vaIndex, 1);
+      this.ordernarJogadores();
     }
   }
 
@@ -217,6 +229,19 @@ export class TorneioPage implements OnInit {
     }else{
       this.panelClasses[index] = this.panelClasses[index].replace('-hidden','')
       this.panelExpandClass[index] = 'expanded';
+    }
+  }
+
+  ordernarJogadores(){
+    if (this.torneio.jogadores){
+      
+      this.torneio.jogadores.sort((j1, j2)=>{        
+        let vaResult:number = j2.pontos - j1.pontos;
+        if (!vaResult){
+          vaResult = j2.rating - j1.rating 
+        }        
+        return vaResult;
+      });      
     }
   }
 }

@@ -1,7 +1,15 @@
+export const TIPO_TORNEIO_SUICO = 0;
+export const TIPO_TORNEIO_ROBIN = 1;
+
 export class Jogador {
     nome: string;
     username: string;
     rating?: number;
+    pontos?:number;
+
+    constructor(){
+        this.pontos = 0;
+    }
 }
 
 export class Partida {
@@ -32,6 +40,7 @@ export class Torneio {
     rodada_atual: number;
     ritmo: string;
     tipo_acesso:number;
+    tipo:number;
     descricao:string;
 
     ganhadores:Jogador[];
@@ -41,6 +50,7 @@ export class Torneio {
         this.rodadas = [];
         this.status = -1;
         this.rodada_atual = -1;
+        this.tipo = TIPO_TORNEIO_SUICO;
     }
 
     get finalizado(): boolean {
