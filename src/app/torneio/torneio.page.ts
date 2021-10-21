@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { Jogador, Partida, Rodada, Torneio } from '../Models/types';
 import { OverlayService } from '../servicos/overlay.service';
+import { format, parseISO } from 'date-fns'
 import {
   ServerApiResult,
   XadrezMineirosApi,
@@ -173,6 +174,7 @@ export class TorneioPage implements OnInit {
     let vaResult:ServerApiResult = await this.serverApi.processarTorneio(this.torneio.id);
     if ((vaResult.ok) && (vaResult.dados)) {      
       this.torneio = JSON.parse(vaResult.dados)      
+      this.ordernarJogadores();
     } else if (vaResult.necessario_login) {
       this.overlayService.showError(vaResult.error);
       this.router.navigateByUrl('/login');
@@ -243,5 +245,15 @@ export class TorneioPage implements OnInit {
         return vaResult;
       });      
     }
+  }
+
+  montarTituloRodada(ipRodada){    
+    let vaDataFormatada = format(parseISO(ipRodada.data_inicio), 'dd.MM.y');
+    if (ipRodada.fase){
+      return `Fase ${ipRodada.fase} - Rodada ${ipRodada.numero} - ${vaDataFormatada}`
+    }else{
+      return `Rodada ${ipRodada.numero} - ${vaDataFormatada}`
+    }
+    
   }
 }

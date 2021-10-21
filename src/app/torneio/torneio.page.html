@@ -17,12 +17,12 @@
           <ion-label position="floating">Tipo</ion-label>
           <ion-select [value]="torneio?.tipo" interface="action-sheet" formControlName="tipo" >
             <ion-select-option value="0">Suiço</ion-select-option>
-            <ion-select-option value="1">Round Robin</ion-select-option>
+            <ion-select-option value="1">Pontos Corridos</ion-select-option>
           </ion-select>          
         </ion-item>
         <ion-item class="qtde-rodadas" [disabled]="isIniciado()">
           <ion-label position="floating">Rodadas</ion-label>
-          <ion-input formControlName="qtde_rodadas" type="string" [value]="torneio?.qtde_rodadas">
+          <ion-input formControlName="qtde_rodadas" type="number" [value]="torneio?.qtde_rodadas">
           </ion-input>
         </ion-item>
         <ion-item class="ritmo" [disabled]="isIniciado()">
@@ -43,7 +43,7 @@
       
       <div [class]="panelClasses[0]" *ngIf="isIniciado()">        
         <div *ngFor="let vaRodada of torneio?.rodadas;index as i">
-          <span class="titulo-rodada">Rodada {{vaRodada.numero}} - {{vaRodada.data_inicio|date:'dd.MM.y'}}</span>
+          <span class="titulo-rodada">{{montarTituloRodada(vaRodada)}}</span>
           <ion-list class="partidas">
             <ion-item class="partida" *ngFor="let vaPartida of torneio.rodadas[i].partidas">
               <div class="alinhado-centro">

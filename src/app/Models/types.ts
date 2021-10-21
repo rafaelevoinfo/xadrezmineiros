@@ -20,6 +20,7 @@ export class Partida {
 }
 
 export class Rodada {
+    fase:number;
     numero: number;
     partidas: Partida[];
     data_inicio: Date;
