@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
@@ -22,8 +22,11 @@ export class TorneioPage implements OnInit {
   ganhadores: Jogador[] = [];
   salvando: boolean;
   panelsState:boolean[]=[false, false];
-  panelClasses:string[]=['rodadas', 'jogadores'];
   panelExpandClass:string[]=['expanded', 'expanded'];
+  originalHeight:number[];
+  divsAnimation:HTMLElement[];
+  @ViewChild('rodadas', { read: ElementRef }) div_rodadas: ElementRef;
+  @ViewChild('jogadores', { read: ElementRef }) div_jogadores: ElementRef;
 
   constructor(
     private route: ActivatedRoute,
@@ -49,9 +52,20 @@ export class TorneioPage implements OnInit {
     });
   }
 
-  ngAfterViewInit() {
-    this.carregarTorneio(this.route.snapshot.params.id);
+  ionViewDidEnter(){
+      this.div_rodadas.nativeElement.style.height = this.div_rodadas.nativeElement.clientHeight+'px';      
+      this.div_jogadores.nativeElement.style.height = this.div_jogadores.nativeElement.clientHeight+'px';      
+
+      this.originalHeight = [this.div_rodadas.nativeElement.clientHeight, this.div_jogadores.nativeElement.clientHeight]
+      this.divsAnimation = [this.div_rodadas.nativeElement, this.div_jogadores.nativeElement];
+
   }
+
+  ngAfterViewInit() {  
+    this.carregarTorneio(this.route.snapshot.params.id);        
+  }
+
+
 
   isIniciado(): boolean {
     return this.torneio?.status >= 1;    
@@ -222,21 +236,20 @@ export class TorneioPage implements OnInit {
     this.navCtrl.navigateBack('/torneios');
   }
 
-  collapse(index:number){
+  collapse(index:number){ 
     this.panelsState[index] = !this.panelsState[index];
     if (this.panelsState[index]){
-      this.panelClasses[index] = this.panelClasses[index]+'-hidden'
+      this.divsAnimation[index].style.height = '0';    
       this.panelExpandClass[index] = 'collapsed';
 
-    }else{
-      this.panelClasses[index] = this.panelClasses[index].replace('-hidden','')
-      this.panelExpandClass[index] = 'expanded';
+    }else{      
+      this.divsAnimation[index].style.height = this.originalHeight[index]+'px';
+      this.panelExpandClass[index] = 'expanded';            
     }
   }
 
   ordernarJogadores(){
-    if (this.torneio.jogadores){
-      
+    if (this.torneio.jogadores){      
       this.torneio.jogadores.sort((j1, j2)=>{        
         let vaResult:number = j2.pontos - j1.pontos;
         if (!vaResult){

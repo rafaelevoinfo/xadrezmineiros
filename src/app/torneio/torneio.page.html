@@ -41,7 +41,7 @@
         <ion-button color="light" *ngIf="serverApi.isLogado()" size="small" (click)="processarTorneio()">Pegar resultados</ion-button>
       </div>
       
-      <div [class]="panelClasses[0]" *ngIf="isIniciado()">        
+      <div #rodadas class="rodadas" *ngIf="isIniciado()">
         <div *ngFor="let vaRodada of torneio?.rodadas;index as i">
           <span class="titulo-rodada">{{montarTituloRodada(vaRodada)}}</span>
           <ion-list class="partidas">
@@ -58,7 +58,7 @@
       </div>
 
       <span class="titulo-group {{panelExpandClass[1]}}" (click)="collapse(1)">Jogadores</span>
-      <div [class]="panelClasses[1]">
+      <div #jogadores class="jogadores">
         <form *ngIf="!isIniciado() && serverApi.isLogado()" [formGroup]='jogadorForm' (submit)="adicionarJogador()">
           <ion-item lines="none" class="add-jogador">
             <ion-input formControlName="username" placeholder="Username do Lichess"></ion-input>

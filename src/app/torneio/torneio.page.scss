@@ -106,17 +106,10 @@ ion-item::part(native){
 .rodadas, .jogadores{
   padding: 0px 0px 0px 10px;
   border-left: 2px solid white;
-  max-height:1000px;
-  transition: max-height 500ms ease-in-out;
+  overflow: hidden;
+  transition: height 500ms ease-in-out;
 }
 
-.rodadas-hidden, .jogadores-hidden {  
-  padding: 0px 0px 0px 10px;
-  border-left: 2px solid white;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 200ms ease-in-out;
-}
 
 .titulo-rodada{
   text-decoration: underline;
