@@ -1,10 +1,16 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NavController } from '@ionic/angular';
 import { Jogador, Partida, Rodada, Torneio } from '../Models/types';
 import { OverlayService } from '../servicos/overlay.service';
-import { format, parseISO } from 'date-fns'
+import { format, parseISO } from 'date-fns';
 import {
   ServerApiResult,
   XadrezMineirosApi,
@@ -21,10 +27,10 @@ export class TorneioPage implements OnInit {
   jogadorForm: FormGroup;
   ganhadores: Jogador[] = [];
   salvando: boolean;
-  panelsState:boolean[]=[false, false];
-  panelExpandClass:string[]=['expanded', 'expanded'];
-  originalHeight:number[];
-  divsAnimation:HTMLElement[];
+  panelsState: boolean[] = [false, false];
+  panelExpandClass: string[] = ['expanded', 'expanded'];
+  originalHeight: number[];
+  divsAnimation: HTMLElement[];
   @ViewChild('rodadas', { read: ElementRef }) div_rodadas: ElementRef;
   @ViewChild('jogadores', { read: ElementRef }) div_jogadores: ElementRef;
 
@@ -43,7 +49,7 @@ export class TorneioPage implements OnInit {
       qtde_rodadas: ['', [Validators.required]],
       ritmo: [10, [Validators.required]],
       data_inicio: ['', [Validators.required]],
-      tipo:[0, [Validators.required]],
+      tipo: [0, [Validators.required]],
       descricao: ['', []],
     });
 
@@ -52,27 +58,34 @@ export class TorneioPage implements OnInit {
     });
   }
 
-  ionViewDidEnter(){
+  async ionViewDidEnter() {
+    
+    await this.carregarTorneio(this.route.snapshot.params.id);
+
+    //Esse evento é chamado quando o html ja foi carregad entao é seguro eu usar this.div_rodadas por exemplo. Porem ainda preciso do setTimeout pq senao aparentemente o div ainda nao calculou seu tamanho
+    setTimeout(() => {
       this.div_rodadas.nativeElement.style.height = this.div_rodadas.nativeElement.clientHeight+'px';      
       this.div_jogadores.nativeElement.style.height = this.div_jogadores.nativeElement.clientHeight+'px';      
 
       this.originalHeight = [this.div_rodadas.nativeElement.clientHeight, this.div_jogadores.nativeElement.clientHeight]
       this.divsAnimation = [this.div_rodadas.nativeElement, this.div_jogadores.nativeElement];
-
+    }, 200);  
   }
 
-  ngAfterViewInit() {  
-    this.carregarTorneio(this.route.snapshot.params.id);        
+  ngAfterViewInit() {
+    // this.carregarTorneio(this.route.snapshot.params.id);
   }
-
-
 
   isIniciado(): boolean {
-    return this.torneio?.status >= 1;    
+    return this.torneio?.status >= 1;
   }
 
-  isPermitidoIniciar():boolean{
-    return this.torneio?.id && (this.torneio?.status <= 0) && (this.torneio?.jogadores?.length > 1);
+  isPermitidoIniciar(): boolean {
+    return (
+      this.torneio?.id &&
+      this.torneio?.status <= 0 &&
+      this.torneio?.jogadores?.length > 1
+    );
   }
 
   async carregarTorneio(ipId: string) {
@@ -88,7 +101,6 @@ export class TorneioPage implements OnInit {
             data_inicio: this.torneio.data_inicio.toISOString(),
             tipo: this.torneio.tipo,
             descricao: this.torneio.descricao,
-
           });
         }
       }
@@ -129,7 +141,7 @@ export class TorneioPage implements OnInit {
           }
           console.log(this.torneio);
           this.overlayService.showInfoMsg('Salvo com sucesso!');
-        } else if (vaResult.necessario_login){
+        } else if (vaResult.necessario_login) {
           this.overlayService.showError(vaResult.error);
           this.router.navigateByUrl('/login');
         } else {
@@ -154,7 +166,7 @@ export class TorneioPage implements OnInit {
               );
               if (vaResult.ok) {
                 this.voltar();
-              } else if (vaResult.necessario_login){
+              } else if (vaResult.necessario_login) {
                 this.overlayService.showError(vaResult.error);
                 this.router.navigateByUrl('/login');
               } else {
@@ -169,14 +181,16 @@ export class TorneioPage implements OnInit {
   }
 
   async iniciar() {
-    if (!this.torneio.id){
-      this.overlayService.showError("Necessário salvar o torneio antes de inicia-lo.")
+    if (!this.torneio.id) {
+      this.overlayService.showError(
+        'Necessário salvar o torneio antes de inicia-lo.'
+      );
       return;
     }
-    let vaResult = await this.serverApi.iniciarTorneio(this.torneio.id);    
+    let vaResult = await this.serverApi.iniciarTorneio(this.torneio.id);
     if (vaResult.ok) {
       this.voltar();
-    } else if (vaResult.necessario_login){
+    } else if (vaResult.necessario_login) {
       this.overlayService.showError(vaResult.error);
       this.router.navigateByUrl('/login');
     } else {
@@ -184,28 +198,30 @@ export class TorneioPage implements OnInit {
     }
   }
 
-  async processarTorneio(){
-    let vaResult:ServerApiResult = await this.serverApi.processarTorneio(this.torneio.id);
-    if ((vaResult.ok) && (vaResult.dados)) {      
-      this.torneio = JSON.parse(vaResult.dados)      
+  async processarTorneio() {
+    let vaResult: ServerApiResult = await this.serverApi.processarTorneio(
+      this.torneio.id
+    );
+    if (vaResult.ok && vaResult.dados) {
+      this.torneio = JSON.parse(vaResult.dados);
       this.ordernarJogadores();
     } else if (vaResult.necessario_login) {
       this.overlayService.showError(vaResult.error);
       this.router.navigateByUrl('/login');
     } else {
       this.overlayService.toast({
-        message:"Nenhuma alteração encontrada",
-        color:'warning'
-      })
+        message: 'Nenhuma alteração encontrada',
+        color: 'warning',
+      });
     }
   }
 
   async adicionarJogador() {
-    let vaResult = await this.serverApi.buscarJogador(      
+    let vaResult = await this.serverApi.buscarJogador(
       this.jogadorForm.value.username
     );
     console.log(vaResult);
-    if (vaResult.status == 200){
+    if (vaResult.status == 200) {
       let vaJogador = JSON.parse(vaResult.dados);
       this.torneio.jogadores.push(vaJogador);
 
@@ -236,37 +252,36 @@ export class TorneioPage implements OnInit {
     this.navCtrl.navigateBack('/torneios');
   }
 
-  collapse(index:number){ 
+  collapse(index: number) {
     this.panelsState[index] = !this.panelsState[index];
-    if (this.panelsState[index]){
-      this.divsAnimation[index].style.height = '0';    
+    if (this.panelsState[index]) {
+      this.divsAnimation[index].style.height = '0';
       this.panelExpandClass[index] = 'collapsed';
-
-    }else{      
-      this.divsAnimation[index].style.height = this.originalHeight[index]+'px';
-      this.panelExpandClass[index] = 'expanded';            
+    } else {
+      this.divsAnimation[index].style.height =
+        this.originalHeight[index] + 'px';
+      this.panelExpandClass[index] = 'expanded';
     }
   }
 
-  ordernarJogadores(){
-    if (this.torneio.jogadores){      
-      this.torneio.jogadores.sort((j1, j2)=>{        
-        let vaResult:number = j2.pontos - j1.pontos;
-        if (!vaResult){
-          vaResult = j2.rating - j1.rating 
-        }        
+  ordernarJogadores() {
+    if (this.torneio.jogadores) {
+      this.torneio.jogadores.sort((j1, j2) => {
+        let vaResult: number = j2.pontos - j1.pontos;
+        if (!vaResult) {
+          vaResult = j2.rating - j1.rating;
+        }
         return vaResult;
-      });      
+      });
     }
   }
 
-  montarTituloRodada(ipRodada){    
+  montarTituloRodada(ipRodada) {
     let vaDataFormatada = format(parseISO(ipRodada.data_inicio), 'dd.MM.y');
-    if (ipRodada.fase){
-      return `Fase ${ipRodada.fase} - Rodada ${ipRodada.numero} - ${vaDataFormatada}`
-    }else{
-      return `Rodada ${ipRodada.numero} - ${vaDataFormatada}`
+    if (ipRodada.fase) {
+      return `Fase ${ipRodada.fase} - Rodada ${ipRodada.numero} - ${vaDataFormatada}`;
+    } else {
+      return `Rodada ${ipRodada.numero} - ${vaDataFormatada}`;
     }
-    
   }
 }
